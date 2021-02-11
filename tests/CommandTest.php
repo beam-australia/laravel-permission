@@ -4,28 +4,28 @@ namespace Spatie\Permission\Test;
 
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Group;
 
 class CommandTest extends TestCase
 {
     /** @test */
-    public function it_can_create_a_role()
+    public function it_can_create_a_group()
     {
-        Artisan::call('permission:create-role', ['name' => 'new-role']);
+        Artisan::call('permission:create-group', ['name' => 'new-group']);
 
-        $this->assertCount(1, Role::where('name', 'new-role')->get());
-        $this->assertCount(0, Role::where('name', 'new-role')->first()->permissions);
+        $this->assertCount(1, Group::where('name', 'new-group')->get());
+        $this->assertCount(0, Group::where('name', 'new-group')->first()->permissions);
     }
 
     /** @test */
-    public function it_can_create_a_role_with_a_specific_guard()
+    public function it_can_create_a_group_with_a_specific_guard()
     {
-        Artisan::call('permission:create-role', [
-            'name' => 'new-role',
+        Artisan::call('permission:create-group', [
+            'name' => 'new-group',
             'guard' => 'api',
         ]);
 
-        $this->assertCount(1, Role::where('name', 'new-role')
+        $this->assertCount(1, Group::where('name', 'new-group')
             ->where('guard_name', 'api')
             ->get());
     }
@@ -52,27 +52,27 @@ class CommandTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_a_role_and_permissions_at_same_time()
+    public function it_can_create_a_group_and_permissions_at_same_time()
     {
-        Artisan::call('permission:create-role', [
-            'name' => 'new-role',
+        Artisan::call('permission:create-group', [
+            'name' => 'new-group',
             'permissions' => 'first permission | second permission',
         ]);
 
-        $role = Role::where('name', 'new-role')->first();
+        $group = Group::where('name', 'new-group')->first();
 
-        $this->assertTrue($role->hasPermissionTo('first permission'));
-        $this->assertTrue($role->hasPermissionTo('second permission'));
+        $this->assertTrue($group->hasPermissionTo('first permission'));
+        $this->assertTrue($group->hasPermissionTo('second permission'));
     }
 
     /** @test */
-    public function it_can_create_a_role_without_duplication()
+    public function it_can_create_a_group_without_duplication()
     {
-        Artisan::call('permission:create-role', ['name' => 'new-role']);
-        Artisan::call('permission:create-role', ['name' => 'new-role']);
+        Artisan::call('permission:create-group', ['name' => 'new-group']);
+        Artisan::call('permission:create-group', ['name' => 'new-group']);
 
-        $this->assertCount(1, Role::where('name', 'new-role')->get());
-        $this->assertCount(0, Role::where('name', 'new-role')->first()->permissions);
+        $this->assertCount(1, Group::where('name', 'new-group')->get());
+        $this->assertCount(0, Group::where('name', 'new-group')->first()->permissions);
     }
 
     /** @test */
@@ -95,17 +95,17 @@ class CommandTest extends TestCase
         $this->assertTrue(strpos($output, 'Guard: admin') !== false);
 
         if (method_exists($this, 'assertMatchesRegularExpression')) {
-            // |               | testRole | testRole2 |
-            $this->assertMatchesRegularExpression('/\|\s+\|\s+testRole\s+\|\s+testRole2\s+\|/', $output);
+            // |               | testGroup | testGroup2 |
+            $this->assertMatchesRegularExpression('/\|\s+\|\s+testGroup\s+\|\s+testGroup2\s+\|/', $output);
 
             // | edit-articles |  ·       |  ·        |
             $this->assertMatchesRegularExpression('/\|\s+edit-articles\s+\|\s+·\s+\|\s+·\s+\|/', $output);
         } else { // phpUnit 9/8
-            $this->assertRegExp('/\|\s+\|\s+testRole\s+\|\s+testRole2\s+\|/', $output);
+            $this->assertRegExp('/\|\s+\|\s+testGroup\s+\|\s+testGroup2\s+\|/', $output);
             $this->assertRegExp('/\|\s+edit-articles\s+\|\s+·\s+\|\s+·\s+\|/', $output);
         }
 
-        Role::findByName('testRole')->givePermissionTo('edit-articles');
+        Group::findByName('testGroup')->givePermissionTo('edit-articles');
         $this->reloadPermissions();
 
         Artisan::call('permission:show');

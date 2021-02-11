@@ -3,37 +3,37 @@ title: Using artisan commands
 weight: 7
 ---
 
-## Creating roles and permissions with Artisan Commands
+## Creating groups and permissions with Artisan Commands
 
-You can create a role or permission from the console with artisan commands.
+You can create a group or permission from the console with artisan commands.
 
 ```bash
-php artisan permission:create-role writer
+php artisan permission:create-group writer
 ```
 
 ```bash
 php artisan permission:create-permission "edit articles"
 ```
 
-When creating permissions/roles for specific guards you can specify the guard names as a second argument:
+When creating permissions/groups for specific guards you can specify the guard names as a second argument:
 
 ```bash
-php artisan permission:create-role writer web
+php artisan permission:create-group writer web
 ```
 
 ```bash
 php artisan permission:create-permission "edit articles" web
 ```
 
-When creating roles you can also create and link permissions at the same time:
+When creating groups you can also create and link permissions at the same time:
 
 ```bash
-php artisan permission:create-role writer web "create articles|edit articles"
+php artisan permission:create-group writer web "create articles|edit articles"
 ```
 
-## Displaying roles and permissions in the console
+## Displaying groups and permissions in the console
 
-There is also a `show` command to show a table of roles and permissions per guard:
+There is also a `show` command to show a table of groups and permissions per guard:
 
 ```bash
 php artisan permission:show
@@ -41,7 +41,7 @@ php artisan permission:show
 
 ## Resetting the Cache
 
-When you use the built-in functions for manipulating roles and permissions, the cache is automatically reset for you, and relations are automatically reloaded for the current model record.
+When you use the built-in functions for manipulating groups and permissions, the cache is automatically reset for you, and relations are automatically reloaded for the current model record.
 
 See the Advanced-Usage/Cache section of these docs for detailed specifics.
 

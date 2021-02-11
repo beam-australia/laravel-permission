@@ -16,27 +16,27 @@ return [
         'permission' => Spatie\Permission\Models\Permission::class,
 
         /*
-         * When using the "HasRoles" trait from this package, we need to know which
-         * Eloquent model should be used to retrieve your roles. Of course, it
-         * is often just the "Role" model but you may use whatever you like.
+         * When using the "HasGroups" trait from this package, we need to know which
+         * Eloquent model should be used to retrieve your groups. Of course, it
+         * is often just the "Group" model but you may use whatever you like.
          *
-         * The model you want to use as a Role model needs to implement the
-         * `Spatie\Permission\Contracts\Role` contract.
+         * The model you want to use as a Group model needs to implement the
+         * `Spatie\Permission\Contracts\Group` contract.
          */
 
-        'role' => Spatie\Permission\Models\Role::class,
+        'group' => Spatie\Permission\Models\Group::class,
 
     ],
 
     'table_names' => [
 
         /*
-         * When using the "HasRoles" trait from this package, we need to know which
-         * table should be used to retrieve your roles. We have chosen a basic
+         * When using the "HasGroups" trait from this package, we need to know which
+         * table should be used to retrieve your groups. We have chosen a basic
          * default value but you may easily change it to any table you like.
          */
 
-        'roles' => 'roles',
+        'groups' => 'groups',
 
         /*
          * When using the "HasPermissions" trait from this package, we need to know which
@@ -55,20 +55,20 @@ return [
         'model_has_permissions' => 'model_has_permissions',
 
         /*
-         * When using the "HasRoles" trait from this package, we need to know which
-         * table should be used to retrieve your models roles. We have chosen a
+         * When using the "HasGroups" trait from this package, we need to know which
+         * table should be used to retrieve your models groups. We have chosen a
          * basic default value but you may easily change it to any table you like.
          */
 
-        'model_has_roles' => 'model_has_roles',
+        'model_has_groups' => 'model_has_groups',
 
         /*
-         * When using the "HasRoles" trait from this package, we need to know which
-         * table should be used to retrieve your roles permissions. We have chosen a
+         * When using the "HasGroups" trait from this package, we need to know which
+         * table should be used to retrieve your groups permissions. We have chosen a
          * basic default value but you may easily change it to any table you like.
          */
 
-        'role_has_permissions' => 'role_has_permissions',
+        'group_has_permissions' => 'group_has_permissions',
     ],
 
     'column_names' => [
@@ -93,12 +93,12 @@ return [
     'display_permission_in_exception' => false,
 
     /*
-     * When set to true, the required role names are added to the exception
+     * When set to true, the required group names are added to the exception
      * message. This could be considered an information leak in some contexts, so
      * the default setting is false here for optimum safety.
      */
 
-    'display_role_in_exception' => false,
+    'display_group_in_exception' => false,
 
     /*
      * By default wildcard permission lookups are disabled.
@@ -110,7 +110,7 @@ return [
 
         /*
          * By default all permissions are cached for 24 hours to speed up performance.
-         * When permissions or roles are updated the cache is flushed automatically.
+         * When permissions or groups are updated the cache is flushed automatically.
          */
 
         'expiration_time' => \DateInterval::createFromDateString('24 hours'),
@@ -134,7 +134,7 @@ return [
 
         /*
          * You may optionally indicate a specific cache driver to use for permission and
-         * role caching using any of the `store` drivers listed in the cache.php config
+         * group caching using any of the `store` drivers listed in the cache.php config
          * file. Using 'default' here means to use the `default` set in cache.php.
          */
 

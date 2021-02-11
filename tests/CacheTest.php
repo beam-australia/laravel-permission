@@ -5,7 +5,7 @@ namespace Spatie\Permission\Test;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Contracts\Permission;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Contracts\Group;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -13,7 +13,7 @@ class CacheTest extends TestCase
 {
     protected $cache_init_count = 0;
     protected $cache_load_count = 0;
-    protected $cache_run_count = 2; // roles lookup, permissions lookup
+    protected $cache_run_count = 2; // groups lookup, permissions lookup
     protected $cache_relations_count = 1;
 
     protected $registrar;
@@ -77,9 +77,9 @@ class CacheTest extends TestCase
     }
 
     /** @test */
-    public function it_flushes_the_cache_when_creating_a_role()
+    public function it_flushes_the_cache_when_creating_a_group()
     {
-        app(Role::class)->create(['name' => 'new']);
+        app(Group::class)->create(['name' => 'new']);
 
         $this->resetQueryCount();
 
@@ -89,12 +89,12 @@ class CacheTest extends TestCase
     }
 
     /** @test */
-    public function it_flushes_the_cache_when_updating_a_role()
+    public function it_flushes_the_cache_when_updating_a_group()
     {
-        $role = app(Role::class)->create(['name' => 'new']);
+        $group = app(Group::class)->create(['name' => 'new']);
 
-        $role->name = 'other name';
-        $role->save();
+        $group->name = 'other name';
+        $group->save();
 
         $this->resetQueryCount();
 
@@ -104,13 +104,13 @@ class CacheTest extends TestCase
     }
 
     /** @test */
-    public function it_flushes_the_cache_when_removing_a_role_from_a_user()
+    public function it_flushes_the_cache_when_removing_a_group_from_a_user()
     {
-        $this->testUser->assignRole('testRole');
+        $this->testUser->assignGroup('testGroup');
 
         $this->registrar->getPermissions();
 
-        $this->testUser->removeRole('testRole');
+        $this->testUser->removeGroup('testGroup');
 
         $this->resetQueryCount();
 
@@ -135,9 +135,9 @@ class CacheTest extends TestCase
     }
 
     /** @test */
-    public function it_flushes_the_cache_when_giving_a_permission_to_a_role()
+    public function it_flushes_the_cache_when_giving_a_permission_to_a_group()
     {
-        $this->testUserRole->givePermissionTo($this->testUserPermission);
+        $this->testUserGroup->givePermissionTo($this->testUserPermission);
 
         $this->resetQueryCount();
 
@@ -149,8 +149,8 @@ class CacheTest extends TestCase
     /** @test */
     public function has_permission_to_should_use_the_cache()
     {
-        $this->testUserRole->givePermissionTo(['edit-articles', 'edit-news', 'Edit News']);
-        $this->testUser->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo(['edit-articles', 'edit-news', 'Edit News']);
+        $this->testUser->assignGroup('testGroup');
 
         $this->resetQueryCount();
         $this->assertTrue($this->testUser->hasPermissionTo('edit-articles'));
@@ -174,8 +174,8 @@ class CacheTest extends TestCase
     {
         $this->expectException(PermissionDoesNotExist::class);
 
-        $this->testUserRole->givePermissionTo(['edit-articles', 'web']);
-        $this->testUser->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo(['edit-articles', 'web']);
+        $this->testUser->assignGroup('testGroup');
 
         $this->resetQueryCount();
         $this->assertTrue($this->testUser->hasPermissionTo('edit-articles', 'web'));
@@ -189,8 +189,8 @@ class CacheTest extends TestCase
     /** @test */
     public function get_all_permissions_should_use_the_cache()
     {
-        $this->testUserRole->givePermissionTo($expected = ['edit-articles', 'edit-news']);
-        $this->testUser->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo($expected = ['edit-articles', 'edit-news']);
+        $this->testUser->assignGroup('testGroup');
 
         $this->resetQueryCount();
         $this->registrar->getPermissions();

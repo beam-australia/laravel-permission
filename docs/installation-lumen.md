@@ -31,7 +31,7 @@ Then, in `bootstrap/app.php`, uncomment the `auth` middleware, and register this
 $app->routeMiddleware([
     'auth'       => App\Http\Middleware\Authenticate::class,
     'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
-    'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
+    'group'       => Spatie\Permission\Middlewares\GroupMiddleware::class,
 ]);
 ```
 

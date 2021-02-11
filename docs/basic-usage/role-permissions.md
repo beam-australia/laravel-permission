@@ -1,88 +1,88 @@
 ---
-title: Using Permissions via Roles
+title: Using Permissions via Groups
 weight: 3
 ---
 
-## Assigning Roles
+## Assigning Groups
 
-A role can be assigned to any user:
+A group can be assigned to any user:
 
 ```php
-$user->assignRole('writer');
+$user->assignGroup('writer');
 
-// You can also assign multiple roles at once
-$user->assignRole('writer', 'admin');
+// You can also assign multiple groups at once
+$user->assignGroup('writer', 'admin');
 // or as an array
-$user->assignRole(['writer', 'admin']);
+$user->assignGroup(['writer', 'admin']);
 ```
 
-A role can be removed from a user:
+A group can be removed from a user:
 
 ```php
-$user->removeRole('writer');
+$user->removeGroup('writer');
 ```
 
-Roles can also be synced:
+Groups can also be synced:
 
 ```php
-// All current roles will be removed from the user and replaced by the array given
-$user->syncRoles(['writer', 'admin']);
+// All current groups will be removed from the user and replaced by the array given
+$user->syncGroups(['writer', 'admin']);
 ```
 
-## Checking Roles
+## Checking Groups
 
-You can determine if a user has a certain role:
+You can determine if a user has a certain group:
 
 ```php
-$user->hasRole('writer');
+$user->hasGroup('writer');
 
-// or at least one role from an array of roles:
-$user->hasRole(['editor', 'moderator']);
+// or at least one group from an array of groups:
+$user->hasGroup(['editor', 'moderator']);
 ```
 
-You can also determine if a user has any of a given list of roles:
+You can also determine if a user has any of a given list of groups:
 
 ```php
-$user->hasAnyRole(['writer', 'reader']);
+$user->hasAnyGroup(['writer', 'reader']);
 // or
-$user->hasAnyRole('writer', 'reader');
+$user->hasAnyGroup('writer', 'reader');
 ```
 
-You can also determine if a user has all of a given list of roles:
+You can also determine if a user has all of a given list of groups:
 
 ```php
-$user->hasAllRoles(Role::all());
+$user->hasAllGroups(Group::all());
 ```
 
-The `assignRole`, `hasRole`, `hasAnyRole`, `hasAllRoles`  and `removeRole` functions can accept a
- string, a `\Spatie\Permission\Models\Role` object or an `\Illuminate\Support\Collection` object.
+The `assignGroup`, `hasGroup`, `hasAnyGroup`, `hasAllGroups`  and `removeGroup` functions can accept a
+ string, a `\Spatie\Permission\Models\Group` object or an `\Illuminate\Support\Collection` object.
 
 
-## Assigning Permissions to Roles
+## Assigning Permissions to Groups
 
-A permission can be given to a role:
+A permission can be given to a group:
 
 ```php
-$role->givePermissionTo('edit articles');
+$group->givePermissionTo('edit articles');
 ```
 
-You can determine if a role has a certain permission:
+You can determine if a group has a certain permission:
 
 ```php
-$role->hasPermissionTo('edit articles');
+$group->hasPermissionTo('edit articles');
 ```
 
-A permission can be revoked from a role:
+A permission can be revoked from a group:
 
 ```php
-$role->revokePermissionTo('edit articles');
+$group->revokePermissionTo('edit articles');
 ```
 
 The `givePermissionTo` and `revokePermissionTo` functions can accept a
 string or a `Spatie\Permission\Models\Permission` object.
 
 
-**Permissions are inherited from roles automatically.**
+**Permissions are inherited from groups automatically.**
 
 
 ## Assigning Direct Permissions To A User
@@ -91,20 +91,20 @@ Additionally, individual permissions can be assigned to the user too.
 For instance:
 
 ```php
-$role = Role::findByName('writer');
-$role->givePermissionTo('edit articles');
+$group = Group::findByName('writer');
+$group->givePermissionTo('edit articles');
 
-$user->assignRole('writer');
+$user->assignGroup('writer');
 
 $user->givePermissionTo('delete articles');
 ```
 
-In the above example, a role is given permission to edit articles and this role is assigned to a user. 
+In the above example, a group is given permission to edit articles and this group is assigned to a user. 
 Now the user can edit articles and additionally delete articles. The permission of 'delete articles' is the user's direct permission because it is assigned directly to them.
 When we call `$user->hasDirectPermission('delete articles')` it returns `true`, 
 but `false` for `$user->hasDirectPermission('edit articles')`.
 
-This method is useful if one builds a form for setting permissions for roles and users in an application and wants to restrict or change inherited permissions of roles of the user, i.e. allowing to change only direct permissions of the user.
+This method is useful if one builds a form for setting permissions for groups and users in an application and wants to restrict or change inherited permissions of groups of the user, i.e. allowing to change only direct permissions of the user.
 
 
 You can check if the user has a Specific or All or Any of a set of permissions directly assigned:
@@ -131,8 +131,8 @@ You can examine all of these permissions:
 // Direct permissions
 $user->getDirectPermissions() // Or $user->permissions;
 
-// Permissions inherited from the user's roles
-$user->getPermissionsViaRoles();
+// Permissions inherited from the user's groups
+$user->getPermissionsViaGroups();
 
 // All permissions which apply on the user (inherited and direct)
 $user->getAllPermissions();

@@ -34,10 +34,10 @@ git add .
 git commit -m "Add Spatie Laravel Permissions package"
 php artisan migrate:fresh
 
-# Add `HasRoles` trait to User model
-sed -i '' $'s/use Notifiable;/use Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasRoles;/' app/User.php
-sed -i '' $'s/use HasFactory, Notifiable;/use HasFactory, Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasRoles;/' app/Models/User.php
-git add . && git commit -m "Add HasRoles trait"
+# Add `HasGroups` trait to User model
+sed -i '' $'s/use Notifiable;/use Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasGroups;/' app/User.php
+sed -i '' $'s/use HasFactory, Notifiable;/use HasFactory, Notifiable;\\\n    use \\\\Spatie\\\\Permission\\\\Traits\\\\HasGroups;/' app/Models/User.php
+git add . && git commit -m "Add HasGroups trait"
 
 # Add Laravel's basic auth scaffolding
 composer require laravel/ui --dev
@@ -56,19 +56,19 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Group;
 use Spatie\Permission\PermissionRegistrar;
 
 class PermissionsDemoSeeder extends Seeder
 {
     /**
-     * Create the initial roles and permissions.
+     * Create the initial groups and permissions.
      *
      * @return void
      */
     public function run()
     {
-        // Reset cached roles and permissions
+        // Reset cached groups and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // create permissions
@@ -77,16 +77,16 @@ class PermissionsDemoSeeder extends Seeder
         Permission::create(['name' => 'publish articles']);
         Permission::create(['name' => 'unpublish articles']);
 
-        // create roles and assign existing permissions
-        $role1 = Role::create(['name' => 'writer']);
-        $role1->givePermissionTo('edit articles');
-        $role1->givePermissionTo('delete articles');
+        // create groups and assign existing permissions
+        $group1 = Group::create(['name' => 'writer']);
+        $group1->givePermissionTo('edit articles');
+        $group1->givePermissionTo('delete articles');
 
-        $role2 = Role::create(['name' => 'admin']);
-        $role2->givePermissionTo('publish articles');
-        $role2->givePermissionTo('unpublish articles');
+        $group2 = Group::create(['name' => 'admin']);
+        $group2->givePermissionTo('publish articles');
+        $group2->givePermissionTo('unpublish articles');
 
-        $role3 = Role::create(['name' => 'super-admin']);
+        $group3 = Group::create(['name' => 'super-admin']);
         // gets all permissions via Gate::before rule; see AuthServiceProvider
 
         // create demo users
@@ -94,19 +94,19 @@ class PermissionsDemoSeeder extends Seeder
             'name' => 'Example User',
             'email' => 'test@example.com',
         ]);
-        $user->assignRole($role1);
+        $user->assignGroup($group1);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Example Admin User',
             'email' => 'admin@example.com',
         ]);
-        $user->assignRole($role2);
+        $user->assignGroup($group2);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Example Super-Admin User',
             'email' => 'superadmin@example.com',
         ]);
-        $user->assignRole($role3);
+        $user->assignGroup($group3);
     }
 }
 
@@ -130,9 +130,9 @@ Super-Admins are a common feature. Using the following approach allows that when
         
         //
 
-+        // Implicitly grant "Super Admin" role all permission checks using can()
++        // Implicitly grant "Super Admin" group all permission checks using can()
 +        Gate::before(function ($user, $ability) {
-+            if ($user->hasRole('Super-Admin')) {
++            if ($user->hasGroup('Super-Admin')) {
 +                return true;
 +            }
 +        });

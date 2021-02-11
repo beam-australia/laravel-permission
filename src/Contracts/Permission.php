@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 interface Permission
 {
     /**
-     * A permission can be applied to roles.
+     * A permission can be applied to groups.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles(): BelongsToMany;
+    public function groups(): BelongsToMany;
 
     /**
      * Find a permission by its name.

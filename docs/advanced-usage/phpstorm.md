@@ -13,15 +13,15 @@ You may wish to extend PhpStorm to support Blade Directives of this package.
 3. Add the following new directives for the laravel-permission package:
 
 
-**role**
+**group**
 
 - has parameter = YES
-- Prefix: `<?php if(auth()->check() && auth()->user()->hasRole(`
+- Prefix: `<?php if(auth()->check() && auth()->user()->hasGroup(`
 - Suffix: `)); ?>`
 
 --
 
-**endrole**
+**endgroup**
 
 - has parameter = NO
 - Prefix: blank
@@ -29,15 +29,15 @@ You may wish to extend PhpStorm to support Blade Directives of this package.
 
 --
 
-**hasrole**
+**hasgroup**
 
 - has parameter = YES
-- Prefix: `<?php if(auth()->check() && auth()->user()->hasRole(`
+- Prefix: `<?php if(auth()->check() && auth()->user()->hasGroup(`
 - Suffix: `)); ?>`
 
 --
 
-**endhasrole**
+**endhasgroup**
 
 - has parameter = NO
 - Prefix: blank
@@ -45,15 +45,15 @@ You may wish to extend PhpStorm to support Blade Directives of this package.
 
 --
 
-**hasanyrole**
+**hasanygroup**
 
 - has parameter = YES
-- Prefix: `<?php if(auth()->check() && auth()->user()->hasAnyRole(`
+- Prefix: `<?php if(auth()->check() && auth()->user()->hasAnyGroup(`
 - Suffix: `)); ?>`
 
 --
 
-**endhasanyrole**
+**endhasanygroup**
 
 - has parameter = NO
 - Prefix: blank
@@ -61,15 +61,15 @@ You may wish to extend PhpStorm to support Blade Directives of this package.
 
 --
 
-**hasallroles**
+**hasallgroups**
 
 - has parameter = YES
-- Prefix: `<?php if(auth()->check() && auth()->user()->hasAllRoles(`
+- Prefix: `<?php if(auth()->check() && auth()->user()->hasAllGroups(`
 - Suffix: `)); ?>`
 
 --
 
-**endhasallroles**
+**endhasallgroups**
 
 - has parameter = NO
 - Prefix: blank
@@ -77,15 +77,15 @@ You may wish to extend PhpStorm to support Blade Directives of this package.
 
 --
 
-**unlessrole**
+**unlessgroup**
 
 - has parameter = YES
-- Prefix: `<?php if(auth()->check() && !auth()->user()->hasRole(`
+- Prefix: `<?php if(auth()->check() && !auth()->user()->hasGroup(`
 - Suffix: `)); ?>`
 
 --
 
-**endunlessrole**
+**endunlessgroup**
 
 - has parameter = NO
 - Prefix: blank

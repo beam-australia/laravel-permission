@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\Permission\Contracts\Permission;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Contracts\Group;
 use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\PermissionServiceProvider;
 
@@ -19,11 +19,11 @@ abstract class TestCase extends Orchestra
     /** @var \Spatie\Permission\Test\Admin */
     protected $testAdmin;
 
-    /** @var \Spatie\Permission\Models\Role */
-    protected $testUserRole;
+    /** @var \Spatie\Permission\Models\Group */
+    protected $testUserGroup;
 
-    /** @var \Spatie\Permission\Models\Role */
-    protected $testAdminRole;
+    /** @var \Spatie\Permission\Models\Group */
+    protected $testAdminGroup;
 
     /** @var \Spatie\Permission\Models\Permission */
     protected $testUserPermission;
@@ -39,11 +39,11 @@ abstract class TestCase extends Orchestra
         $this->setUpDatabase($this->app);
 
         $this->testUser = User::first();
-        $this->testUserRole = app(Role::class)->find(1);
+        $this->testUserGroup = app(Group::class)->find(1);
         $this->testUserPermission = app(Permission::class)->find(1);
 
         $this->testAdmin = Admin::first();
-        $this->testAdminRole = app(Role::class)->find(3);
+        $this->testAdminGroup = app(Group::class)->find(3);
         $this->testAdminPermission = app(Permission::class)->find(4);
     }
 
@@ -116,9 +116,9 @@ abstract class TestCase extends Orchestra
 
         User::create(['email' => 'test@user.com']);
         Admin::create(['email' => 'admin@user.com']);
-        $app[Role::class]->create(['name' => 'testRole']);
-        $app[Role::class]->create(['name' => 'testRole2']);
-        $app[Role::class]->create(['name' => 'testAdminRole', 'guard_name' => 'admin']);
+        $app[Group::class]->create(['name' => 'testGroup']);
+        $app[Group::class]->create(['name' => 'testGroup2']);
+        $app[Group::class]->create(['name' => 'testAdminGroup', 'guard_name' => 'admin']);
         $app[Permission::class]->create(['name' => 'edit-articles']);
         $app[Permission::class]->create(['name' => 'edit-news']);
         $app[Permission::class]->create(['name' => 'edit-blog']);

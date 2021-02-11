@@ -4,7 +4,7 @@ namespace Spatie\Permission\Test;
 
 use Spatie\Permission\Models\Permission;
 
-class WildcardRoleTest extends TestCase
+class WildcardGroupTest extends TestCase
 {
     public function setUp(): void
     {
@@ -21,9 +21,9 @@ class WildcardRoleTest extends TestCase
     public function it_can_be_given_a_permission()
     {
         Permission::create(['name' => 'posts.*']);
-        $this->testUserRole->givePermissionTo('posts.*');
+        $this->testUserGroup->givePermissionTo('posts.*');
 
-        $this->assertTrue($this->testUserRole->hasPermissionTo('posts.create'));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo('posts.create'));
     }
 
     /** @test */
@@ -32,10 +32,10 @@ class WildcardRoleTest extends TestCase
         Permission::create(['name' => 'posts.*']);
         Permission::create(['name' => 'news.*']);
 
-        $this->testUserRole->givePermissionTo(['posts.*', 'news.*']);
+        $this->testUserGroup->givePermissionTo(['posts.*', 'news.*']);
 
-        $this->assertTrue($this->testUserRole->hasPermissionTo('posts.create'));
-        $this->assertTrue($this->testUserRole->hasPermissionTo('news.create'));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo('posts.create'));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo('news.create'));
     }
 
     /** @test */
@@ -44,30 +44,30 @@ class WildcardRoleTest extends TestCase
         Permission::create(['name' => 'posts.*']);
         Permission::create(['name' => 'news.*']);
 
-        $this->testUserRole->givePermissionTo('posts.*', 'news.*');
+        $this->testUserGroup->givePermissionTo('posts.*', 'news.*');
 
-        $this->assertTrue($this->testUserRole->hasPermissionTo('posts.edit.123'));
-        $this->assertTrue($this->testUserRole->hasPermissionTo('news.view.1'));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo('posts.edit.123'));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo('news.view.1'));
     }
 
     /** @test */
     public function it_can_be_given_a_permission_using_objects()
     {
-        $this->testUserRole->givePermissionTo($this->testUserPermission);
+        $this->testUserGroup->givePermissionTo($this->testUserPermission);
 
-        $this->assertTrue($this->testUserRole->hasPermissionTo($this->testUserPermission));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo($this->testUserPermission));
     }
 
     /** @test */
     public function it_returns_false_if_it_does_not_have_the_permission()
     {
-        $this->assertFalse($this->testUserRole->hasPermissionTo('other-permission'));
+        $this->assertFalse($this->testUserGroup->hasPermissionTo('other-permission'));
     }
 
     /** @test */
     public function it_returns_false_if_permission_does_not_exists()
     {
-        $this->assertFalse($this->testUserRole->hasPermissionTo('doesnt-exist'));
+        $this->assertFalse($this->testUserGroup->hasPermissionTo('doesnt-exist'));
     }
 
     /** @test */
@@ -75,7 +75,7 @@ class WildcardRoleTest extends TestCase
     {
         $permission = app(Permission::class)->findByName('other-permission');
 
-        $this->assertFalse($this->testUserRole->hasPermissionTo($permission));
+        $this->assertFalse($this->testUserGroup->hasPermissionTo($permission));
     }
 
     /** @test */
@@ -83,13 +83,13 @@ class WildcardRoleTest extends TestCase
     {
         $permission = app(Permission::class)->findOrCreate('another-permission');
 
-        $this->assertFalse($this->testUserRole->hasPermissionTo($permission));
+        $this->assertFalse($this->testUserGroup->hasPermissionTo($permission));
 
-        $this->testUserRole->givePermissionTo($permission);
+        $this->testUserGroup->givePermissionTo($permission);
 
-        $this->testUserRole = $this->testUserRole->fresh();
+        $this->testUserGroup = $this->testUserGroup->fresh();
 
-        $this->assertTrue($this->testUserRole->hasPermissionTo('another-permission'));
+        $this->assertTrue($this->testUserGroup->hasPermissionTo('another-permission'));
     }
 
     /** @test */
@@ -97,6 +97,6 @@ class WildcardRoleTest extends TestCase
     {
         $permission = app(Permission::class)->findByName('wrong-guard-permission', 'admin');
 
-        $this->assertFalse($this->testUserRole->hasPermissionTo($permission));
+        $this->assertFalse($this->testUserGroup->hasPermissionTo($permission));
     }
 }

@@ -22,70 +22,70 @@ or
 You can use `@can`, `@cannot`, `@canany`, and `@guest` to test for permission-related access.
 
 
-## Roles 
-As discussed in the Best Practices section of the docs, **it is strongly recommended to always use permission directives**, instead of role directives.
+## Groups 
+As discussed in the Best Practices section of the docs, **it is strongly recommended to always use permission directives**, instead of group directives.
 
-Additionally, if your reason for testing against Roles is for a Super-Admin, see the *Defining A Super-Admin* section of the docs.
+Additionally, if your reason for testing against Groups is for a Super-Admin, see the *Defining A Super-Admin* section of the docs.
 
-If you actually need to test for Roles, this package offers some Blade directives to verify whether the currently logged in user has all or any of a given list of roles. 
+If you actually need to test for Groups, this package offers some Blade directives to verify whether the currently logged in user has all or any of a given list of groups. 
 
 Optionally you can pass in the `guard` that the check will be performed on as a second argument.
 
-#### Blade and Roles
-Check for a specific role:
+#### Blade and Groups
+Check for a specific group:
 ```php
-@role('writer')
+@group('writer')
     I am a writer!
 @else
     I am not a writer...
-@endrole
+@endgroup
 ```
 is the same as
 ```php
-@hasrole('writer')
+@hasgroup('writer')
     I am a writer!
 @else
     I am not a writer...
-@endhasrole
+@endhasgroup
 ```
 
-Check for any role in a list:
+Check for any group in a list:
 ```php
-@hasanyrole($collectionOfRoles)
-    I have one or more of these roles!
+@hasanygroup($collectionOfGroups)
+    I have one or more of these groups!
 @else
-    I have none of these roles...
-@endhasanyrole
+    I have none of these groups...
+@endhasanygroup
 // or
-@hasanyrole('writer|admin')
+@hasanygroup('writer|admin')
     I am either a writer or an admin or both!
 @else
-    I have none of these roles...
-@endhasanyrole
+    I have none of these groups...
+@endhasanygroup
 ```
-Check for all roles:
+Check for all groups:
 
 ```php
-@hasallroles($collectionOfRoles)
-    I have all of these roles!
+@hasallgroups($collectionOfGroups)
+    I have all of these groups!
 @else
-    I do not have all of these roles...
-@endhasallroles
+    I do not have all of these groups...
+@endhasallgroups
 // or
-@hasallroles('writer|admin')
+@hasallgroups('writer|admin')
     I am both a writer and an admin!
 @else
-    I do not have all of these roles...
-@endhasallroles
+    I do not have all of these groups...
+@endhasallgroups
 ```
 
-Alternatively, `@unlessrole` gives the reverse for checking a singular role, like this:
+Alternatively, `@unlessgroup` gives the reverse for checking a singular group, like this:
 
 ```php
-@unlessrole('does not have this role')
-    I do not have the role
+@unlessgroup('does not have this group')
+    I do not have the group
 @else
-    I do have the role
-@endunlessrole
+    I do have the group
+@endunlessgroup
 ```
 

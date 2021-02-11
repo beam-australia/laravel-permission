@@ -4,46 +4,46 @@ namespace Spatie\Permission\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-interface Role
+interface Group
 {
     /**
-     * A role may be given various permissions.
+     * A group may be given various permissions.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function permissions(): BelongsToMany;
 
     /**
-     * Find a role by its name and guard name.
+     * Find a group by its name and guard name.
      *
      * @param string $name
      * @param string|null $guardName
      *
-     * @return \Spatie\Permission\Contracts\Role
+     * @return \Spatie\Permission\Contracts\Group
      *
-     * @throws \Spatie\Permission\Exceptions\RoleDoesNotExist
+     * @throws \Spatie\Permission\Exceptions\GroupDoesNotExist
      */
     public static function findByName(string $name, $guardName): self;
 
     /**
-     * Find a role by its id and guard name.
+     * Find a group by its id and guard name.
      *
      * @param int $id
      * @param string|null $guardName
      *
-     * @return \Spatie\Permission\Contracts\Role
+     * @return \Spatie\Permission\Contracts\Group
      *
-     * @throws \Spatie\Permission\Exceptions\RoleDoesNotExist
+     * @throws \Spatie\Permission\Exceptions\GroupDoesNotExist
      */
     public static function findById(int $id, $guardName): self;
 
     /**
-     * Find or create a role by its name and guard name.
+     * Find or create a group by its name and guard name.
      *
      * @param string $name
      * @param string|null $guardName
      *
-     * @return \Spatie\Permission\Contracts\Role
+     * @return \Spatie\Permission\Contracts\Group
      */
     public static function findOrCreate(string $name, $guardName): self;
 

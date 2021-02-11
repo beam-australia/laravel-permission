@@ -4,26 +4,26 @@ namespace Spatie\Permission\Commands;
 
 use Illuminate\Console\Command;
 use Spatie\Permission\Contracts\Permission as PermissionContract;
-use Spatie\Permission\Contracts\Role as RoleContract;
+use Spatie\Permission\Contracts\Group as GroupContract;
 
-class CreateRole extends Command
+class CreateGroup extends Command
 {
-    protected $signature = 'permission:create-role
-        {name : The name of the role}
+    protected $signature = 'permission:create-group
+        {name : The name of the group}
         {guard? : The name of the guard}
-        {permissions? : A list of permissions to assign to the role, separated by | }';
+        {permissions? : A list of permissions to assign to the group, separated by | }';
 
-    protected $description = 'Create a role';
+    protected $description = 'Create a group';
 
     public function handle()
     {
-        $roleClass = app(RoleContract::class);
+        $groupClass = app(GroupContract::class);
 
-        $role = $roleClass::findOrCreate($this->argument('name'), $this->argument('guard'));
+        $group = $groupClass::findOrCreate($this->argument('name'), $this->argument('guard'));
 
-        $role->givePermissionTo($this->makePermissions($this->argument('permissions')));
+        $group->givePermissionTo($this->makePermissions($this->argument('permissions')));
 
-        $this->info("Role `{$role->name}` created");
+        $this->info("Group `{$group->name}` created");
     }
 
     /**

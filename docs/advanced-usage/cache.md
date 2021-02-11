@@ -3,27 +3,27 @@ title: Cache
 weight: 5
 ---
 
-Role and Permission data are cached to speed up performance.
+Group and Permission data are cached to speed up performance.
 
 ### Automatic Cache Refresh Using Built-In Functions
 
-When you **use the built-in functions** for manipulating roles and permissions, the cache is automatically reset for you, and relations are automatically reloaded for the current model record:
+When you **use the built-in functions** for manipulating groups and permissions, the cache is automatically reset for you, and relations are automatically reloaded for the current model record:
 
 ```php
-$user->assignRole('writer');
-$user->removeRole('writer');
-$user->syncRoles(params);
-$role->givePermissionTo('edit articles');
-$role->revokePermissionTo('edit articles');
-$role->syncPermissions(params);
-$permission->assignRole('writer');
-$permission->removeRole('writer');
-$permission->syncRoles(params);
+$user->assignGroup('writer');
+$user->removeGroup('writer');
+$user->syncGroups(params);
+$group->givePermissionTo('edit articles');
+$group->revokePermissionTo('edit articles');
+$group->syncPermissions(params);
+$permission->assignGroup('writer');
+$permission->removeGroup('writer');
+$permission->syncGroups(params);
 ```
 
-HOWEVER, if you manipulate permission/role data directly in the database instead of calling the supplied methods, then you will not see the changes reflected in the application unless you manually reset the cache.
+HOWEVER, if you manipulate permission/group data directly in the database instead of calling the supplied methods, then you will not see the changes reflected in the application unless you manually reset the cache.
 
-Additionally, because the Role and Permission models are Eloquent models which implement the `RefreshesPermissionCache` trait, creating and deleting Roles and Permissions will automatically clear the cache. If you have created your own models which do not extend the default models then you will need to implement the trait yourself.
+Additionally, because the Group and Permission models are Eloquent models which implement the `RefreshesPermissionCache` trait, creating and deleting Groups and Permissions will automatically clear the cache. If you have created your own models which do not extend the default models then you will need to implement the trait yourself.
 
 
 ### Manual cache reset

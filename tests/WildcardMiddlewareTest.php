@@ -7,25 +7,25 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
-use Spatie\Permission\Middlewares\RoleMiddleware;
-use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
+use Spatie\Permission\Middlewares\GroupMiddleware;
+use Spatie\Permission\Middlewares\GroupOrPermissionMiddleware;
 use Spatie\Permission\Models\Permission;
 
 class WildcardMiddlewareTest extends TestCase
 {
-    protected $roleMiddleware;
+    protected $groupMiddleware;
     protected $permissionMiddleware;
-    protected $roleOrPermissionMiddleware;
+    protected $groupOrPermissionMiddleware;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->roleMiddleware = new RoleMiddleware();
+        $this->groupMiddleware = new GroupMiddleware();
 
         $this->permissionMiddleware = new PermissionMiddleware();
 
-        $this->roleOrPermissionMiddleware = new RoleOrPermissionMiddleware();
+        $this->groupOrPermissionMiddleware = new GroupOrPermissionMiddleware();
 
         app('config')->set('permission.enable_wildcard_permission', true);
     }
@@ -101,38 +101,38 @@ class WildcardMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_access_a_route_protected_by_permission_or_role_middleware_if_has_this_permission_or_role()
+    public function a_user_can_access_a_route_protected_by_permission_or_group_middleware_if_has_this_permission_or_group()
     {
         Auth::login($this->testUser);
 
         Permission::create(['name' => 'articles.*']);
 
-        $this->testUser->assignRole('testRole');
+        $this->testUser->assignGroup('testGroup');
         $this->testUser->givePermissionTo('articles.*');
 
         $this->assertEquals(
             200,
-            $this->runMiddleware($this->roleOrPermissionMiddleware, 'testRole|news.edit|articles.create')
+            $this->runMiddleware($this->groupOrPermissionMiddleware, 'testGroup|news.edit|articles.create')
         );
 
-        $this->testUser->removeRole('testRole');
+        $this->testUser->removeGroup('testGroup');
 
         $this->assertEquals(
             200,
-            $this->runMiddleware($this->roleOrPermissionMiddleware, 'testRole|articles.edit')
+            $this->runMiddleware($this->groupOrPermissionMiddleware, 'testGroup|articles.edit')
         );
 
         $this->testUser->revokePermissionTo('articles.*');
-        $this->testUser->assignRole('testRole');
+        $this->testUser->assignGroup('testGroup');
 
         $this->assertEquals(
             200,
-            $this->runMiddleware($this->roleOrPermissionMiddleware, 'testRole|articles.edit')
+            $this->runMiddleware($this->groupOrPermissionMiddleware, 'testGroup|articles.edit')
         );
 
         $this->assertEquals(
             200,
-            $this->runMiddleware($this->roleOrPermissionMiddleware, ['testRole', 'articles.edit'])
+            $this->runMiddleware($this->groupOrPermissionMiddleware, ['testGroup', 'articles.edit'])
         );
     }
 

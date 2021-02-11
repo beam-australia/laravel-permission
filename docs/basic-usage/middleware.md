@@ -15,21 +15,21 @@ Route::group(['middleware' => ['can:publish articles']], function () {
 
 ## Package Middleware
 
-This package comes with `RoleMiddleware`, `PermissionMiddleware` and `RoleOrPermissionMiddleware` middleware. You can add them inside your `app/Http/Kernel.php` file.
+This package comes with `GroupMiddleware`, `PermissionMiddleware` and `GroupOrPermissionMiddleware` middleware. You can add them inside your `app/Http/Kernel.php` file.
 
 ```php
 protected $routeMiddleware = [
     // ...
-    'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
+    'group' => \Spatie\Permission\Middlewares\GroupMiddleware::class,
     'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-    'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
+    'group_or_permission' => \Spatie\Permission\Middlewares\GroupOrPermissionMiddleware::class,
 ];
 ```
 
 Then you can protect your routes using middleware rules:
 
 ```php
-Route::group(['middleware' => ['role:super-admin']], function () {
+Route::group(['middleware' => ['group:super-admin']], function () {
     //
 });
 
@@ -37,23 +37,23 @@ Route::group(['middleware' => ['permission:publish articles']], function () {
     //
 });
 
-Route::group(['middleware' => ['role:super-admin','permission:publish articles']], function () {
+Route::group(['middleware' => ['group:super-admin','permission:publish articles']], function () {
     //
 });
 
-Route::group(['middleware' => ['role_or_permission:super-admin|edit articles']], function () {
+Route::group(['middleware' => ['group_or_permission:super-admin|edit articles']], function () {
     //
 });
 
-Route::group(['middleware' => ['role_or_permission:publish articles']], function () {
+Route::group(['middleware' => ['group_or_permission:publish articles']], function () {
     //
 });
 ```
 
-Alternatively, you can separate multiple roles or permission with a `|` (pipe) character:
+Alternatively, you can separate multiple groups or permission with a `|` (pipe) character:
 
 ```php
-Route::group(['middleware' => ['role:super-admin|writer']], function () {
+Route::group(['middleware' => ['group:super-admin|writer']], function () {
     //
 });
 
@@ -61,7 +61,7 @@ Route::group(['middleware' => ['permission:publish articles|edit articles']], fu
     //
 });
 
-Route::group(['middleware' => ['role_or_permission:super-admin|edit articles']], function () {
+Route::group(['middleware' => ['group_or_permission:super-admin|edit articles']], function () {
     //
 });
 ```
@@ -71,13 +71,13 @@ You can protect your controllers similarly, by setting desired middleware in the
 ```php
 public function __construct()
 {
-    $this->middleware(['role:super-admin','permission:publish articles|edit articles']);
+    $this->middleware(['group:super-admin','permission:publish articles|edit articles']);
 }
 ```
 
 ```php
 public function __construct()
 {
-    $this->middleware(['role_or_permission:super-admin|edit articles']);
+    $this->middleware(['group_or_permission:super-admin|edit articles']);
 }
 ```

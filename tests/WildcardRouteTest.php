@@ -21,20 +21,20 @@ class WildcardRouteTest extends TestCase
     }
 
     /** @test */
-    public function test_role_and_permission_function_together()
+    public function test_group_and_permission_function_together()
     {
         app('config')->set('permission.enable_wildcard_permission', true);
 
         $router = $this->getRouter();
 
-        $router->get('role-permission-test', $this->getRouteResponse())
-                ->name('role-permission.test')
-                ->role('superadmin|admin')
+        $router->get('group-permission-test', $this->getRouteResponse())
+                ->name('group-permission.test')
+                ->group('superadmin|admin')
                 ->permission('user.create|user.edit');
 
         $this->assertEquals(
             [
-                'role:superadmin|admin',
+                'group:superadmin|admin',
                 'permission:user.create|user.edit',
             ],
             $this->getLastRouteMiddlewareFromRouter($router)

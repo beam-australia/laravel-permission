@@ -10,12 +10,12 @@ use Spatie\Permission\Exceptions\PermissionAlreadyExists;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Guard;
 use Spatie\Permission\PermissionRegistrar;
-use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasGroups;
 use Spatie\Permission\Traits\RefreshesPermissionCache;
 
 class Permission extends Model implements PermissionContract
 {
-    use HasRoles;
+    use HasGroups;
     use RefreshesPermissionCache;
 
     protected $guarded = ['id'];
@@ -46,15 +46,15 @@ class Permission extends Model implements PermissionContract
     }
 
     /**
-     * A permission can be applied to roles.
+     * A permission can be applied to groups.
      */
-    public function roles(): BelongsToMany
+    public function groups(): BelongsToMany
     {
         return $this->belongsToMany(
-            config('permission.models.role'),
-            config('permission.table_names.role_has_permissions'),
+            config('permission.models.group'),
+            config('permission.table_names.group_has_permissions'),
             'permission_id',
-            'role_id'
+            'group_id'
         );
     }
 

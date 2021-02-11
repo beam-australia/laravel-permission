@@ -4,7 +4,7 @@ All notable changes to `laravel-permission` will be documented in this file
 
 ## 4.0.0 - 2021-01-27
 - Drop support on Laravel 5.8 #1615
-- Fix bug when adding roles to a model that doesn't yet exist #1663
+- Fix bug when adding groups to a model that doesn't yet exist #1663
 - Enforce unique constraints on database level #1261
 - Changed PermissionRegistrar::initializeCache() public to allow reinitializing cache in custom situations. #1521
 - Use Eloquent\Collection instead of Support\Collection for consistency, collection merging, etc #1630
@@ -16,7 +16,7 @@ If you are on a PHP version below 7.2.5 or a Laravel version below 6.0 you can u
 - Allow PHP 8.0
 
 ## 3.17.0 - 2020-09-16
-- Optional `$guard` parameter may be passed to `RoleMiddleware`, `PermissionMiddleware`, and `RoleOrPermissionMiddleware`. See #1565
+- Optional `$guard` parameter may be passed to `GroupMiddleware`, `PermissionMiddleware`, and `GroupOrPermissionMiddleware`. See #1565
 
 ## 3.16.0 - 2020-08-18
 - Added Laravel 8 support
@@ -31,7 +31,7 @@ If you are on a PHP version below 7.2.5 or a Laravel version below 6.0 you can u
 - Provide migration error text to stop caching local config when installing packages.
 
 ## 3.12.0 - 2020-05-14
-- Add missing config setting for `display_role_in_exception`
+- Add missing config setting for `display_group_in_exception`
 - Ensure artisan `permission:show` command uses configured models
 
 ## 3.11.0 - 2020-03-03
@@ -62,7 +62,7 @@ If you are on a PHP version below 7.2.5 or a Laravel version below 6.0 you can u
 
 ## 3.6.0 - 2020-01-17
 - Added Laravel 7.0 support
-- Allow splat operator for passing roles to `hasAnyRole()`
+- Allow splat operator for passing groups to `hasAnyGroup()`
 
 ## 3.5.0 - 2020-01-07
 - Added missing `guardName` to Exception `PermissionDoesNotExist` #1316
@@ -81,7 +81,7 @@ If you are on a PHP version below 7.2.5 or a Laravel version below 6.0 you can u
 - Remove checks for older Laravel versions
 
 ## 3.2.0 - 2019-10-16
-- Implementation of optional guard check for hasRoles and hasAllRoles - See #1236
+- Implementation of optional guard check for hasGroups and hasAllGroups - See #1236
 
 ## 3.1.0 - 2019-10-16
 - Use bigIncrements/bigInteger in migration - See #1224
@@ -93,13 +93,13 @@ To be clear: v3 requires minimum Laravel 5.8 and PHP 7.2
 
 
 ## 2.38.0 - 2019-09-02
-- Allow support for multiple role/permission models
-- Load roles relationship only when missing
+- Allow support for multiple group/permission models
+- Load groups relationship only when missing
 - Wrap helpers in function_exists() check
 
 ## 2.37.0 - 2019-04-09
-- Added `permission:show` CLI command to display a table of roles/permissions
-- `removeRole` now returns the model, consistent with other methods
+- Added `permission:show` CLI command to display a table of groups/permissions
+- `removeGroup` now returns the model, consistent with other methods
 - model `$guarded` properties updated to `protected`
 - README updates
 
@@ -115,7 +115,7 @@ To be clear: v3 requires minimum Laravel 5.8 and PHP 7.2
 - added getPermissionNames() method
 
 ## 2.34.0 - 2019-02-26
-- Add explicit pivotKeys to roles/permissions BelongsToMany relationships
+- Add explicit pivotKeys to groups/permissions BelongsToMany relationships
 
 ## 2.33.0 - 2019-02-20
 - Laravel 5.8 compatibility
@@ -124,7 +124,7 @@ To be clear: v3 requires minimum Laravel 5.8 and PHP 7.2
 - Fix duplicate permissions being created through artisan command
 
 ## 2.31.0 - 2019-02-03
-- Add custom guard query to role scope
+- Add custom guard query to group scope
 - Remove use of array_wrap helper function due to future deprecation
 
 ## 2.30.0 - 2019-01-28
@@ -140,7 +140,7 @@ https://laravel-news.com/cache-ttl-change-coming-to-laravel-5-8
 https://github.com/laravel/framework/commit/fd6eb89b62ec09df1ffbee164831a827e83fa61d
 
 ## 2.29.0 - 2018-12-15
-- Fix bound `saved` event from firing on all subsequent models when calling assignRole or givePermissionTo on unsaved models. However, it is preferable to save the model first, and then add roles/permissions after saving. See #971.
+- Fix bound `saved` event from firing on all subsequent models when calling assignGroup or givePermissionTo on unsaved models. However, it is preferable to save the model first, and then add groups/permissions after saving. See #971.
 
 ## 2.28.2 - 2018-12-10
 - Use config settings for cache reset in migration stub
@@ -152,7 +152,7 @@ https://github.com/laravel/framework/commit/fd6eb89b62ec09df1ffbee164831a827e83f
 - Rename `getCacheKey` method in HasPermissions trait to `getPermissionCacheKey` for clearer specificity. 
 
 ## 2.27.0 - 2018-11-21
-- Add ability to specify a cache driver for roles/permissions caching
+- Add ability to specify a cache driver for groups/permissions caching
 
 ## 2.26.2 - 2018-11-20
 - Added the ability to reset the permissions cache via an Artisan command:
@@ -182,51 +182,51 @@ https://github.com/spatie/laravel-permission/blob/master/config/permission.php
 
 
 ## 2.25.0 - 2018-11-07
-- A model's `roles` and `permissions` relations (respectively) are now automatically reloaded after an Assign/Remove role or Grant/Revoke of permissions. This means there's no longer a need to call `->fresh()` on the model if the only reason is to reload the role/permission relations. (That said, you may want to call it for other reasons.)
-- Added support for passing id to HasRole()
+- A model's `groups` and `permissions` relations (respectively) are now automatically reloaded after an Assign/Remove group or Grant/Revoke of permissions. This means there's no longer a need to call `->fresh()` on the model if the only reason is to reload the group/permission relations. (That said, you may want to call it for other reasons.)
+- Added support for passing id to HasGroup()
 
 ## 2.24.0 - 2018-11-06
-- Fix operator used on RoleOrPermissionMiddleware, and avoid throwing PermissionDoesNotExist if invalid permission passed
-- Auto-reload model role relation after using AssignRole
-- Avoid empty permission creation when using the CreateRole command
+- Fix operator used on GroupOrPermissionMiddleware, and avoid throwing PermissionDoesNotExist if invalid permission passed
+- Auto-reload model group relation after using AssignGroup
+- Avoid empty permission creation when using the CreateGroup command
 
 ## 2.23.0 - 2018-10-15
-- Avoid unnecessary queries of user roles when fetching all permissions
+- Avoid unnecessary queries of user groups when fetching all permissions
 
 ## 2.22.1 - 2018-10-15
 - Fix Lumen issue with Route helper added in 2.22.0
 
 ## 2.22.0 - 2018-10-11
-- Added `Route::role()` and `Route::permission()` middleware helper functions
-- Added new `role_or_permission` middleware to allow specifying "or" combinations
+- Added `Route::group()` and `Route::permission()` middleware helper functions
+- Added new `group_or_permission` middleware to allow specifying "or" combinations
 
 ## 2.21.0 - 2018-09-29
 - Revert changes from 2.17.1 in order to support Lumen 5.7
 
 ## 2.20.0 - 2018-09-19
-- It will sync roles/permissions to models that are not persisted, by registering a `saved` callback. 
+- It will sync groups/permissions to models that are not persisted, by registering a `saved` callback. 
 (It would previously throw an Integrity constraint violation QueryException on the pivot table insertion.)
 
 ## 2.19.2 - 2018-09-19
-- add `@elserole` directive:
+- add `@elsegroup` directive:
  Usage: 
 ```php
-@role('roleA')
- // user hasRole 'roleA'
-@elserole('roleB')
- // user hasRole 'roleB' but not 'roleA'
-@endrole
+@group('groupA')
+ // user hasGroup 'groupA'
+@elsegroup('groupB')
+ // user hasGroup 'groupB' but not 'groupA'
+@endgroup
 ```
 
 ## 2.19.1 - 2018-09-14
 - Spark-related fix to accommodate missing guard[providers] config
 
 ## 2.19.0 - 2018-09-10
-- Add ability to pass in IDs or mixed values to `role` scope
-- Add `@unlessrole`/`@endunlessrole` Blade directives
+- Add ability to pass in IDs or mixed values to `group` scope
+- Add `@unlessgroup`/`@endunlessgroup` Blade directives
 
 ## 2.18.0 - 2018-09-06
-- Expanded CLI `permission:create-role` command to create optionally create-and-link permissions in one command. Also now no longer throws an error if the role already exists.
+- Expanded CLI `permission:create-group` command to create optionally create-and-link permissions in one command. Also now no longer throws an error if the group already exists.
 
 ## 2.17.1 - 2018-08-28
 - Require laravel/framework instead of illuminate/* starting from ~5.4.0 
@@ -236,17 +236,17 @@ https://github.com/spatie/laravel-permission/blob/master/config/permission.php
 - Laravel 5.7 compatibility
 
 ## 2.16.0 - 2018-08-20
-- Replace static Permission::class and Role::class with dynamic value (allows custom models more easily)
+- Replace static Permission::class and Group::class with dynamic value (allows custom models more easily)
 - Added type checking in hasPermissionTo and hasDirectPermission
 
 ## 2.15.0 - 2018-08-15
-- Make assigning the same role or permission twice not throw an exception
+- Make assigning the same group or permission twice not throw an exception
 
 ## 2.14.0 - 2018-08-13
 - Allow using another key name than `model_id` by defining new `columns` array with `model_morph_key` key in config file. This improves UUID compatibility as discussed in #777.
 
 ## 2.13.0 - 2018-08-02
-- Fix issue with null values passed to syncPermissions & syncRoles
+- Fix issue with null values passed to syncPermissions & syncGroups
 
 ## 2.12.2 - 2018-06-13
 - added hasAllPermissions method
@@ -265,7 +265,7 @@ https://github.com/spatie/laravel-permission/blob/master/config/permission.php
 (Previously it was expecting models to implement the Authenticatable contract; but really that should have been Authorizable, since that's where the Gate functionality really is.)
 
 ## 2.9.2 - 2018-03-12
-- Now findOrCreate() exists for both Roles and Permissions
+- Now findOrCreate() exists for both Groups and Permissions
 - Internal code refactoring for future dev work
 
 ## 2.9.1 - 2018-02-23
@@ -273,10 +273,10 @@ https://github.com/spatie/laravel-permission/blob/master/config/permission.php
 
 ## 2.9.0 - 2018-02-07
 - add compatibility with Laravel 5.6
-- Allow assign/sync/remove Roles from Permission model
+- Allow assign/sync/remove Groups from Permission model
 
 ## 2.8.2 - 2018-02-07
-- Allow a collection containing a model to be passed to role/permission scopes
+- Allow a collection containing a model to be passed to group/permission scopes
 
 ## 2.8.1 - 2018-02-03
 - Fix compatibility with Spark v2.0 to v5.0
@@ -286,11 +286,11 @@ https://github.com/spatie/laravel-permission/blob/master/config/permission.php
 
 ## 2.7.9 - 2018-01-23
 Changes related to throwing UnauthorizedException:
- - When UnauthorizedException is thrown, a property is added with the expected role/permission which triggered it
- - A configuration option may be set to include the list of required roles/permissions in the message
+ - When UnauthorizedException is thrown, a property is added with the expected group/permission which triggered it
+ - A configuration option may be set to include the list of required groups/permissions in the message
 
 ## 2.7.8 - 2018-01-02
-- REVERTED: Dynamic permission_id and role_id columns according to tables name 
+- REVERTED: Dynamic permission_id and group_id columns according to tables name 
 NOTE: This Dynamic field naming was a breaking change, so we've removed it for now. 
 
 BEST NOT TO USE v2.7.7 if you've changed tablenames in the config file.
@@ -298,14 +298,14 @@ BEST NOT TO USE v2.7.7 if you've changed tablenames in the config file.
 ## 2.7.7 - 2017-12-31
 - updated `HasPermissions::getStoredPermission` to allow a collection to be returned, and to fix query when passing multiple permissions
 - Give and revoke multiple permissions 
-- Dynamic permission_id and role_id columns according to tables name 
+- Dynamic permission_id and group_id columns according to tables name 
 - Add findOrCreate function to Permission model 
 - Improved Lumen support
-- Allow guard name to be null for find role by id 
+- Allow guard name to be null for find group by id 
 
 ## 2.7.6 - 2017-11-27
 - added Lumen support
-- updated `HasRole::assignRole` and `HasRole::syncRoles` to accept role id's in addition to role names as arguments
+- updated `HasGroup::assignGroup` and `HasGroup::syncGroups` to accept group id's in addition to group names as arguments
 
 ## 2.7.5 - 2017-10-26
 - fixed `Gate::before` for custom gate callbacks
@@ -323,7 +323,7 @@ The 403 response is backward compatible
 - removed `log_registration_exception` as it is no longer relevant
 
 ## 2.7.1 - 2017-10-12
-- fixed a bug where `Role`s and `Permission`s got detached when soft deleting a model
+- fixed a bug where `Group`s and `Permission`s got detached when soft deleting a model
 
 ## 2.7.0 - 2017-09-27
 - add support for L5.3
@@ -341,19 +341,19 @@ The 403 response is backward compatible
 - let middleware use caching
 
 ## 2.5.1 - 2017-09-02
-- add getRoleNames() method to return a collection of assigned roles
+- add getGroupNames() method to return a collection of assigned groups
 
 ## 2.5.0 - 2017-08-30
 - add compatibility with Laravel 5.5
 
 ## 2.4.2 - 2017-08-11
-- automatically detach roles and permissions when a user gets deleted
+- automatically detach groups and permissions when a user gets deleted
 
 ## 2.4.1 - 2017-08-05
-- fix processing of pipe symbols in `@hasanyrole` and `@hasallroles` Blade directives
+- fix processing of pipe symbols in `@hasanygroup` and `@hasallgroups` Blade directives
 
 ## 2.4.0 -2017-08-05
-- add `PermissionMiddleware` and `RoleMiddleware`
+- add `PermissionMiddleware` and `GroupMiddleware`
 
 ## 2.3.2 - 2017-07-28
 - allow `hasAnyPermission` to take an array of permissions
@@ -362,30 +362,30 @@ The 403 response is backward compatible
 - fix commands not using custom models
 
 ## 2.3.0 - 2017-07-25
-- add `create-permission` and `create-role` commands
+- add `create-permission` and `create-group` commands
 
 ## 2.2.0 - 2017-07-01
-- `hasanyrole` and `hasallrole` can accept multiple roles
+- `hasanygroup` and `hasallgroup` can accept multiple groups
 
 ## 2.1.6 - 2017-06-06
 - fixed a bug where `hasPermissionTo` wouldn't use the right guard name
 
 ## 2.1.5 - 2017-05-17
-- fixed a bug that didn't allow you to assign a role or permission when using multiple guards
+- fixed a bug that didn't allow you to assign a group or permission when using multiple guards
 
 ## 2.1.4 - 2017-05-10
 - add `model_type` to the primary key of tables that use a polymorphic relationship
 
 ## 2.1.3 - 2017-04-21
-- fixed a bug where the role()/permission() relation to user models would be saved incorrectly
-- added users() relation on Permission and Role
+- fixed a bug where the group()/permission() relation to user models would be saved incorrectly
+- added users() relation on Permission and Group
 
 ## 2.1.2 - 2017-04-20
-- fix a bug where the `role()`/`permission()` relation to user models would be saved incorrectly
-- add `users()` relation on `Permission` and `Role`
+- fix a bug where the `group()`/`permission()` relation to user models would be saved incorrectly
+- add `users()` relation on `Permission` and `Group`
 
 ## 2.0.2 - 2017-04-13
-- check for duplicates when adding new roles and permissions
+- check for duplicates when adding new groups and permissions
 
 ## 2.0.1 - 2017-04-11
 - fix the order of the `foreignKey` and `relatedKey` in the relations
@@ -393,7 +393,7 @@ The 403 response is backward compatible
 ## 2.0.0 - 2017-04-10
 - Requires minimum Laravel 5.4
 - cache expiration is now configurable and set to one day by default
-- roles and permissions can now be assigned to any model through the `HasRoles` trait
+- groups and permissions can now be assigned to any model through the `HasGroups` trait
 - removed deprecated `hasPermission` method
 - renamed config file from `laravel-permission` to `permission`.
 
@@ -424,14 +424,14 @@ The 403 response is backward compatible
 - `hasPermissionTo` uses the cache to avoid extra queries when it is called multiple times
 
 ## 1.11.0
-- add `getDirectPermissions`, `getPermissionsViaRoles`, `getAllPermissions`
+- add `getDirectPermissions`, `getPermissionsViaGroups`, `getAllPermissions`
 
 ## 1.10.0 - 2017-02-22
 - add `hasAnyPermission`
 
 ## 1.9.0 - 2017-02-20
 - add `log_registration_exception` in settings file
-- fix for ambiguous column name `id` when using the role scope 
+- fix for ambiguous column name `id` when using the group scope 
 
 ## 1.8.0 - 2017-02-09
 - `hasDirectPermission` method is now public
@@ -443,7 +443,7 @@ The 403 response is backward compatible
 - make exception logging more verbose
 
 ## 1.6.0 - 2016-12-27
-- added `Role` scope
+- added `Group` scope
 
 ## 1.5.3 - 2016-12-15
 - moved some things to `boot` method in SP to solve some compatibility problems with other packages
@@ -452,22 +452,22 @@ The 403 response is backward compatible
 - make compatible with L5.3
 
 ## 1.5.1 - 2016-07-23
-- fixes `givePermissionTo` and `assignRole` in Laravel 5.1
+- fixes `givePermissionTo` and `assignGroup` in Laravel 5.1
 
 ## 1.5.0 - 2016-07-23
 ** this version does not work in Laravel 5.1, please upgrade to version 1.5.1 of this package
 
 - allowed `givePermissonTo` to accept multiple permissions
-- allowed `assignRole` to accept multiple roles
+- allowed `assignGroup` to accept multiple groups
 - added `syncPermissions`-method
-- added `syncRoles`-method
+- added `syncGroups`-method
 - dropped support for PHP 5.5 and HHVM
 
 ## 1.4.0 - 2016-05-08
--  added `hasPermissionTo` function to the `Role` model
+-  added `hasPermissionTo` function to the `Group` model
 
 ## 1.3.4 - 2016-02-27
--  `hasAnyRole` can now properly process an array
+-  `hasAnyGroup` can now properly process an array
 
 ## 1.3.3 - 2016-02-24
 
@@ -498,7 +498,7 @@ The 403 response is backward compatible
 
 ### Added
 - Blade directives 
-- `hasAllRoles()`- and `hasAnyRole()`-functions
+- `hasAllGroups()`- and `hasAnyGroup()`-functions
 
 ## 1.0.2 - 2015-10-11
 

@@ -3,7 +3,7 @@
 namespace Spatie\Permission\Test;
 
 use Artisan;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Contracts\Group;
 
 class BladeTest extends TestCase
 {
@@ -11,65 +11,65 @@ class BladeTest extends TestCase
     {
         parent::setUp();
 
-        $roleModel = app(Role::class);
+        $groupModel = app(Group::class);
 
-        $roleModel->create(['name' => 'member']);
-        $roleModel->create(['name' => 'writer']);
-        $roleModel->create(['name' => 'intern']);
-        $roleModel->create(['name' => 'super-admin', 'guard_name' => 'admin']);
-        $roleModel->create(['name' => 'moderator', 'guard_name' => 'admin']);
+        $groupModel->create(['name' => 'member']);
+        $groupModel->create(['name' => 'writer']);
+        $groupModel->create(['name' => 'intern']);
+        $groupModel->create(['name' => 'super-admin', 'guard_name' => 'admin']);
+        $groupModel->create(['name' => 'moderator', 'guard_name' => 'admin']);
     }
 
     /** @test */
     public function all_blade_directives_will_evaluate_false_when_there_is_nobody_logged_in()
     {
         $permission = 'edit-articles';
-        $role = 'writer';
-        $roles = [$role];
-        $elserole = 'na';
+        $group = 'writer';
+        $groups = [$group];
+        $elsegroup = 'na';
 
         $this->assertEquals('does not have permission', $this->renderView('can', ['permission' => $permission]));
-        $this->assertEquals('does not have role', $this->renderView('role', compact('role', 'elserole')));
-        $this->assertEquals('does not have role', $this->renderView('hasRole', compact('role', 'elserole')));
-        $this->assertEquals('does not have all of the given roles', $this->renderView('hasAllRoles', $roles));
-        $this->assertEquals('does not have all of the given roles', $this->renderView('hasAllRoles', ['roles' => implode('|', $roles)]));
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', $roles));
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', ['roles' => implode('|', $roles)]));
+        $this->assertEquals('does not have group', $this->renderView('group', compact('group', 'elsegroup')));
+        $this->assertEquals('does not have group', $this->renderView('hasGroup', compact('group', 'elsegroup')));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('hasAllGroups', $groups));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('hasAllGroups', ['groups' => implode('|', $groups)]));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', $groups));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', ['groups' => implode('|', $groups)]));
     }
 
     /** @test */
-    public function all_blade_directives_will_evaluate_false_when_somebody_without_roles_or_permissions_is_logged_in()
+    public function all_blade_directives_will_evaluate_false_when_somebody_without_groups_or_permissions_is_logged_in()
     {
         $permission = 'edit-articles';
-        $role = 'writer';
-        $roles = 'writer';
-        $elserole = 'na';
+        $group = 'writer';
+        $groups = 'writer';
+        $elsegroup = 'na';
 
         auth()->setUser($this->testUser);
 
         $this->assertEquals('does not have permission', $this->renderView('can', ['permission' => $permission]));
-        $this->assertEquals('does not have role', $this->renderView('role', compact('role', 'elserole')));
-        $this->assertEquals('does not have role', $this->renderView('hasRole', compact('role', 'elserole')));
-        $this->assertEquals('does not have all of the given roles', $this->renderView('hasAllRoles', compact('roles')));
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', compact('roles')));
+        $this->assertEquals('does not have group', $this->renderView('group', compact('group', 'elsegroup')));
+        $this->assertEquals('does not have group', $this->renderView('hasGroup', compact('group', 'elsegroup')));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('hasAllGroups', compact('groups')));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', compact('groups')));
     }
 
     /** @test */
     public function all_blade_directives_will_evaluate_false_when_somebody_with_another_guard_is_logged_in()
     {
         $permission = 'edit-articles';
-        $role = 'writer';
-        $roles = 'writer';
-        $elserole = 'na';
+        $group = 'writer';
+        $groups = 'writer';
+        $elsegroup = 'na';
 
         auth('admin')->setUser($this->testAdmin);
 
         $this->assertEquals('does not have permission', $this->renderView('can', compact('permission')));
-        $this->assertEquals('does not have role', $this->renderView('role', compact('role', 'elserole')));
-        $this->assertEquals('does not have role', $this->renderView('hasRole', compact('role', 'elserole')));
-        $this->assertEquals('does not have all of the given roles', $this->renderView('hasAllRoles', compact('roles')));
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', compact('roles')));
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', compact('roles')));
+        $this->assertEquals('does not have group', $this->renderView('group', compact('group', 'elsegroup')));
+        $this->assertEquals('does not have group', $this->renderView('hasGroup', compact('group', 'elsegroup')));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('hasAllGroups', compact('groups')));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', compact('groups')));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', compact('groups')));
     }
 
     /** @test */
@@ -85,200 +85,200 @@ class BladeTest extends TestCase
     }
 
     /** @test */
-    public function the_role_directive_will_evaluate_true_when_the_logged_in_user_has_the_role()
+    public function the_group_directive_will_evaluate_true_when_the_logged_in_user_has_the_group()
     {
         auth()->setUser($this->getWriter());
 
-        $this->assertEquals('has role', $this->renderView('role', ['role' => 'writer', 'elserole' => 'na']));
+        $this->assertEquals('has group', $this->renderView('group', ['group' => 'writer', 'elsegroup' => 'na']));
     }
 
     /** @test */
-    public function the_elserole_directive_will_evaluate_true_when_the_logged_in_user_has_the_role()
+    public function the_elsegroup_directive_will_evaluate_true_when_the_logged_in_user_has_the_group()
     {
         auth()->setUser($this->getMember());
 
-        $this->assertEquals('has else role', $this->renderView('role', ['role' => 'writer', 'elserole' => 'member']));
+        $this->assertEquals('has else group', $this->renderView('group', ['group' => 'writer', 'elsegroup' => 'member']));
     }
 
     /** @test */
-    public function the_role_directive_will_evaluate_true_when_the_logged_in_user_has_the_role_for_the_given_guard()
+    public function the_group_directive_will_evaluate_true_when_the_logged_in_user_has_the_group_for_the_given_guard()
     {
         auth('admin')->setUser($this->getSuperAdmin());
 
-        $this->assertEquals('has role for guard', $this->renderView('guardRole', ['role' => 'super-admin', 'guard' => 'admin']));
+        $this->assertEquals('has group for guard', $this->renderView('guardGroup', ['group' => 'super-admin', 'guard' => 'admin']));
     }
 
     /** @test */
-    public function the_hasrole_directive_will_evaluate_true_when_the_logged_in_user_has_the_role()
+    public function the_hasgroup_directive_will_evaluate_true_when_the_logged_in_user_has_the_group()
     {
         auth()->setUser($this->getWriter());
 
-        $this->assertEquals('has role', $this->renderView('hasRole', ['role' => 'writer']));
+        $this->assertEquals('has group', $this->renderView('hasGroup', ['group' => 'writer']));
     }
 
     /** @test */
-    public function the_hasrole_directive_will_evaluate_true_when_the_logged_in_user_has_the_role_for_the_given_guard()
+    public function the_hasgroup_directive_will_evaluate_true_when_the_logged_in_user_has_the_group_for_the_given_guard()
     {
         auth('admin')->setUser($this->getSuperAdmin());
 
-        $this->assertEquals('has role', $this->renderView('guardHasRole', ['role' => 'super-admin', 'guard' => 'admin']));
+        $this->assertEquals('has group', $this->renderView('guardHasGroup', ['group' => 'super-admin', 'guard' => 'admin']));
     }
 
     /** @test */
-    public function the_unlessrole_directive_will_evaluate_true_when_the_logged_in_user_does_not_have_the_role()
+    public function the_unlessgroup_directive_will_evaluate_true_when_the_logged_in_user_does_not_have_the_group()
     {
         auth()->setUser($this->getWriter());
 
-        $this->assertEquals('does not have role', $this->renderView('unlessrole', ['role' => 'another']));
+        $this->assertEquals('does not have group', $this->renderView('unlessgroup', ['group' => 'another']));
     }
 
     /** @test */
-    public function the_unlessrole_directive_will_evaluate_true_when_the_logged_in_user_does_not_have_the_role_for_the_given_guard()
+    public function the_unlessgroup_directive_will_evaluate_true_when_the_logged_in_user_does_not_have_the_group_for_the_given_guard()
     {
         auth('admin')->setUser($this->getSuperAdmin());
 
-        $this->assertEquals('does not have role', $this->renderView('guardunlessrole', ['role' => 'another', 'guard' => 'admin']));
-        $this->assertEquals('does not have role', $this->renderView('guardunlessrole', ['role' => 'super-admin', 'guard' => 'web']));
+        $this->assertEquals('does not have group', $this->renderView('guardunlessgroup', ['group' => 'another', 'guard' => 'admin']));
+        $this->assertEquals('does not have group', $this->renderView('guardunlessgroup', ['group' => 'super-admin', 'guard' => 'web']));
     }
 
     /** @test */
-    public function the_hasanyrole_directive_will_evaluate_false_when_the_logged_in_user_does_not_have_any_of_the_required_roles()
+    public function the_hasanygroup_directive_will_evaluate_false_when_the_logged_in_user_does_not_have_any_of_the_required_groups()
     {
-        $roles = ['writer', 'intern'];
+        $groups = ['writer', 'intern'];
 
         auth()->setUser($this->getMember());
 
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', compact('roles')));
-        $this->assertEquals('does not have any of the given roles', $this->renderView('hasAnyRole', ['roles' => implode('|', $roles)]));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', compact('groups')));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('hasAnyGroup', ['groups' => implode('|', $groups)]));
     }
 
     /** @test */
-    public function the_hasanyrole_directive_will_evaluate_true_when_the_logged_in_user_does_have_some_of_the_required_roles()
+    public function the_hasanygroup_directive_will_evaluate_true_when_the_logged_in_user_does_have_some_of_the_required_groups()
     {
-        $roles = ['member', 'writer', 'intern'];
+        $groups = ['member', 'writer', 'intern'];
 
         auth()->setUser($this->getMember());
 
-        $this->assertEquals('does have some of the roles', $this->renderView('hasAnyRole', compact('roles')));
-        $this->assertEquals('does have some of the roles', $this->renderView('hasAnyRole', ['roles' => implode('|', $roles)]));
+        $this->assertEquals('does have some of the groups', $this->renderView('hasAnyGroup', compact('groups')));
+        $this->assertEquals('does have some of the groups', $this->renderView('hasAnyGroup', ['groups' => implode('|', $groups)]));
     }
 
     /** @test */
-    public function the_hasanyrole_directive_will_evaluate_true_when_the_logged_in_user_does_have_some_of_the_required_roles_for_the_given_guard()
+    public function the_hasanygroup_directive_will_evaluate_true_when_the_logged_in_user_does_have_some_of_the_required_groups_for_the_given_guard()
     {
-        $roles = ['super-admin', 'moderator'];
+        $groups = ['super-admin', 'moderator'];
         $guard = 'admin';
 
         auth('admin')->setUser($this->getSuperAdmin());
 
-        $this->assertEquals('does have some of the roles', $this->renderView('guardHasAnyRole', compact('roles', 'guard')));
+        $this->assertEquals('does have some of the groups', $this->renderView('guardHasAnyGroup', compact('groups', 'guard')));
     }
 
     /** @test */
-    public function the_hasanyrole_directive_will_evaluate_true_when_the_logged_in_user_does_have_some_of_the_required_roles_in_pipe()
+    public function the_hasanygroup_directive_will_evaluate_true_when_the_logged_in_user_does_have_some_of_the_required_groups_in_pipe()
     {
         $guard = 'admin';
 
         auth('admin')->setUser($this->getSuperAdmin());
 
-        $this->assertEquals('does have some of the roles', $this->renderView('guardHasAnyRolePipe', compact('guard')));
+        $this->assertEquals('does have some of the groups', $this->renderView('guardHasAnyGroupPipe', compact('guard')));
     }
 
     /** @test */
-    public function the_hasanyrole_directive_will_evaluate_false_when_the_logged_in_user_doesnt_have_some_of_the_required_roles_in_pipe()
+    public function the_hasanygroup_directive_will_evaluate_false_when_the_logged_in_user_doesnt_have_some_of_the_required_groups_in_pipe()
     {
         $guard = '';
 
         auth('admin')->setUser($this->getMember());
 
-        $this->assertEquals('does not have any of the given roles', $this->renderView('guardHasAnyRolePipe', compact('guard')));
+        $this->assertEquals('does not have any of the given groups', $this->renderView('guardHasAnyGroupPipe', compact('guard')));
     }
 
     /** @test */
-    public function the_hasallroles_directive_will_evaluate_false_when_the_logged_in_user_does_not_have_all_required_roles()
+    public function the_hasallgroups_directive_will_evaluate_false_when_the_logged_in_user_does_not_have_all_required_groups()
     {
-        $roles = ['member', 'writer'];
+        $groups = ['member', 'writer'];
 
         auth()->setUser($this->getMember());
 
-        $this->assertEquals('does not have all of the given roles', $this->renderView('hasAllRoles', compact('roles')));
-        $this->assertEquals('does not have all of the given roles', $this->renderView('hasAllRoles', ['roles' => implode('|', $roles)]));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('hasAllGroups', compact('groups')));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('hasAllGroups', ['groups' => implode('|', $groups)]));
     }
 
     /** @test */
-    public function the_hasallroles_directive_will_evaluate_true_when_the_logged_in_user_does_have_all_required_roles()
+    public function the_hasallgroups_directive_will_evaluate_true_when_the_logged_in_user_does_have_all_required_groups()
     {
-        $roles = ['member', 'writer'];
+        $groups = ['member', 'writer'];
 
         $user = $this->getMember();
 
-        $user->assignRole('writer');
+        $user->assignGroup('writer');
 
         auth()->setUser($user);
 
-        $this->assertEquals('does have all of the given roles', $this->renderView('hasAllRoles', compact('roles')));
-        $this->assertEquals('does have all of the given roles', $this->renderView('hasAllRoles', ['roles' => implode('|', $roles)]));
+        $this->assertEquals('does have all of the given groups', $this->renderView('hasAllGroups', compact('groups')));
+        $this->assertEquals('does have all of the given groups', $this->renderView('hasAllGroups', ['groups' => implode('|', $groups)]));
     }
 
     /** @test */
-    public function the_hasallroles_directive_will_evaluate_true_when_the_logged_in_user_does_have_all_required_roles_for_the_given_guard()
+    public function the_hasallgroups_directive_will_evaluate_true_when_the_logged_in_user_does_have_all_required_groups_for_the_given_guard()
     {
-        $roles = ['super-admin', 'moderator'];
+        $groups = ['super-admin', 'moderator'];
         $guard = 'admin';
 
         $admin = $this->getSuperAdmin();
 
-        $admin->assignRole('moderator');
+        $admin->assignGroup('moderator');
 
         auth('admin')->setUser($admin);
 
-        $this->assertEquals('does have all of the given roles', $this->renderView('guardHasAllRoles', compact('roles', 'guard')));
+        $this->assertEquals('does have all of the given groups', $this->renderView('guardHasAllGroups', compact('groups', 'guard')));
     }
 
     /** @test */
-    public function the_hasallroles_directive_will_evaluate_true_when_the_logged_in_user_does_have_all_required_roles_in_pipe()
+    public function the_hasallgroups_directive_will_evaluate_true_when_the_logged_in_user_does_have_all_required_groups_in_pipe()
     {
         $guard = 'admin';
 
         $admin = $this->getSuperAdmin();
 
-        $admin->assignRole('moderator');
+        $admin->assignGroup('moderator');
 
         auth('admin')->setUser($admin);
 
-        $this->assertEquals('does have all of the given roles', $this->renderView('guardHasAllRolesPipe', compact('guard')));
+        $this->assertEquals('does have all of the given groups', $this->renderView('guardHasAllGroupsPipe', compact('guard')));
     }
 
     /** @test */
-    public function the_hasallroles_directive_will_evaluate_false_when_the_logged_in_user_doesnt_have_all_required_roles_in_pipe()
+    public function the_hasallgroups_directive_will_evaluate_false_when_the_logged_in_user_doesnt_have_all_required_groups_in_pipe()
     {
         $guard = '';
         $user = $this->getMember();
 
-        $user->assignRole('writer');
+        $user->assignGroup('writer');
 
         auth()->setUser($user);
 
-        $this->assertEquals('does not have all of the given roles', $this->renderView('guardHasAllRolesPipe', compact('guard')));
+        $this->assertEquals('does not have all of the given groups', $this->renderView('guardHasAllGroupsPipe', compact('guard')));
     }
 
     protected function getWriter()
     {
-        $this->testUser->assignRole('writer');
+        $this->testUser->assignGroup('writer');
 
         return $this->testUser;
     }
 
     protected function getMember()
     {
-        $this->testUser->assignRole('member');
+        $this->testUser->assignGroup('member');
 
         return $this->testUser;
     }
 
     protected function getSuperAdmin()
     {
-        $this->testAdmin->assignRole('super-admin');
+        $this->testAdmin->assignGroup('super-admin');
 
         return $this->testAdmin;
     }

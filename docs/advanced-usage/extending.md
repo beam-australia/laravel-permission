@@ -12,9 +12,9 @@ If you are creating your own User models and wish Authorization features to be a
 
 #### Child User Models
 
-Due to the nature of polymorphism and Eloquent's hard-coded mapping of model names in the database, setting relationships for child models that inherit permissions of the parent can be difficult (even near impossible depending on app requirements, especially when attempting to do inverse mappings). However, one thing you might consider if you need the child model to never have its own permissions/roles but to only use its parent's permissions/roles, is to [override the `getMorphClass` method on the model](https://github.com/laravel/framework/issues/17830#issuecomment-345619085).
+Due to the nature of polymorphism and Eloquent's hard-coded mapping of model names in the database, setting relationships for child models that inherit permissions of the parent can be difficult (even near impossible depending on app requirements, especially when attempting to do inverse mappings). However, one thing you might consider if you need the child model to never have its own permissions/groups but to only use its parent's permissions/groups, is to [override the `getMorphClass` method on the model](https://github.com/laravel/framework/issues/17830#issuecomment-345619085).
 
-eg: This could be useful, but only if you're willing to give up the child's independence for roles/permissions:
+eg: This could be useful, but only if you're willing to give up the child's independence for groups/permissions:
 ```php
     public function getMorphClass()
     {
@@ -22,30 +22,30 @@ eg: This could be useful, but only if you're willing to give up the child's inde
     }
 ```
 
-## Extending Role and Permission Models
-If you are extending or replacing the role/permission models, you will need to specify your new models in this package's `config/permission.php` file. 
+## Extending Group and Permission Models
+If you are extending or replacing the group/permission models, you will need to specify your new models in this package's `config/permission.php` file. 
 
-First be sure that you've published the configuration file (see the Installation instructions), and edit it to update the `models.role` and `models.permission` values to point to your new models.
+First be sure that you've published the configuration file (see the Installation instructions), and edit it to update the `models.group` and `models.permission` values to point to your new models.
 
 Note the following requirements when extending/replacing the models: 
 
 ### Extending
-If you need to EXTEND the existing `Role` or `Permission` models note that:
+If you need to EXTEND the existing `Group` or `Permission` models note that:
 
-- Your `Role` model needs to extend the `Spatie\Permission\Models\Role` model
+- Your `Group` model needs to extend the `Spatie\Permission\Models\Group` model
 - Your `Permission` model needs to extend the `Spatie\Permission\Models\Permission` model
 - You need to update `config/permission.php` to specify your namespaced model
 
 ### Replacing
-If you need to REPLACE the existing `Role` or `Permission` models you need to keep the following things in mind:
+If you need to REPLACE the existing `Group` or `Permission` models you need to keep the following things in mind:
 
-- Your `Role` model needs to implement the `Spatie\Permission\Contracts\Role` contract
+- Your `Group` model needs to implement the `Spatie\Permission\Contracts\Group` contract
 - Your `Permission` model needs to implement the `Spatie\Permission\Contracts\Permission` contract
 - You need to update `config/permission.php` to specify your namespaced model
 
 
 ## Adding fields to your models
-You can add your own migrations to make changes to the role/permission tables, as you would for adding/changing fields in any other tables in your Laravel project.
+You can add your own migrations to make changes to the group/permission tables, as you would for adding/changing fields in any other tables in your Laravel project.
 
 Following that, you can add any necessary logic for interacting with those fields into your custom/extended Models.
 

@@ -3,7 +3,7 @@
 namespace Spatie\Permission\Test;
 
 use Spatie\Permission\Contracts\Permission;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Contracts\Group;
 use Spatie\Permission\Exceptions\GuardDoesNotMatch;
 use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
@@ -55,8 +55,8 @@ class HasPermissionsTest extends TestCase
         $user1 = User::create(['email' => 'user1@test.com']);
         $user2 = User::create(['email' => 'user2@test.com']);
         $user1->givePermissionTo(['edit-articles', 'edit-news']);
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $user2->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $user2->assignGroup('testGroup');
 
         $scopedUsers1 = User::permission('edit-articles')->get();
         $scopedUsers2 = User::permission(['edit-news'])->get();
@@ -71,8 +71,8 @@ class HasPermissionsTest extends TestCase
         $user1 = User::create(['email' => 'user1@test.com']);
         $user2 = User::create(['email' => 'user2@test.com']);
         $user1->givePermissionTo(['edit-articles', 'edit-news']);
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $user2->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $user2->assignGroup('testGroup');
 
         $scopedUsers1 = User::permission(['edit-articles', 'edit-news'])->get();
         $scopedUsers2 = User::permission(['edit-news'])->get();
@@ -87,8 +87,8 @@ class HasPermissionsTest extends TestCase
         $user1 = User::create(['email' => 'user1@test.com']);
         $user2 = User::create(['email' => 'user2@test.com']);
         $user1->givePermissionTo(['edit-articles', 'edit-news']);
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $user2->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $user2->assignGroup('testGroup');
 
         $scopedUsers1 = User::permission(collect(['edit-articles', 'edit-news']))->get();
         $scopedUsers2 = User::permission(collect(['edit-news']))->get();
@@ -113,13 +113,13 @@ class HasPermissionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_scope_users_without_permissions_only_role()
+    public function it_can_scope_users_without_permissions_only_group()
     {
         $user1 = User::create(['email' => 'user1@test.com']);
         $user2 = User::create(['email' => 'user2@test.com']);
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $user1->assignRole('testRole');
-        $user2->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $user1->assignGroup('testGroup');
+        $user2->assignGroup('testGroup');
 
         $scopedUsers = User::permission('edit-articles')->get();
 
@@ -214,13 +214,13 @@ class HasPermissionsTest extends TestCase
     /** @test */
     public function it_can_give_and_revoke_multiple_permissions()
     {
-        $this->testUserRole->givePermissionTo(['edit-articles', 'edit-news']);
+        $this->testUserGroup->givePermissionTo(['edit-articles', 'edit-news']);
 
-        $this->assertEquals(2, $this->testUserRole->permissions()->count());
+        $this->assertEquals(2, $this->testUserGroup->permissions()->count());
 
-        $this->testUserRole->revokePermissionTo(['edit-articles', 'edit-news']);
+        $this->testUserGroup->revokePermissionTo(['edit-articles', 'edit-news']);
 
-        $this->assertEquals(0, $this->testUserRole->permissions()->count());
+        $this->assertEquals(0, $this->testUserGroup->permissions()->count());
     }
 
     /** @test */
@@ -287,11 +287,11 @@ class HasPermissionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_determine_that_the_user_has_any_of_the_permissions_via_role()
+    public function it_can_determine_that_the_user_has_any_of_the_permissions_via_group()
     {
-        $this->testUserRole->givePermissionTo('edit-articles');
+        $this->testUserGroup->givePermissionTo('edit-articles');
 
-        $this->testUser->assignRole('testRole');
+        $this->testUser->assignGroup('testGroup');
 
         $this->assertTrue($this->testUser->hasAnyPermission('edit-news', 'edit-articles'));
         $this->assertFalse($this->testUser->hasAnyPermission('edit-blog', 'Edit News', ['Edit News']));
@@ -327,11 +327,11 @@ class HasPermissionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_determine_that_the_user_has_all_of_the_permissions_via_role()
+    public function it_can_determine_that_the_user_has_all_of_the_permissions_via_group()
     {
-        $this->testUserRole->givePermissionTo('edit-articles', 'edit-news');
+        $this->testUserGroup->givePermissionTo('edit-articles', 'edit-news');
 
-        $this->testUser->assignRole('testRole');
+        $this->testUser->assignGroup('testGroup');
 
         $this->assertTrue($this->testUser->hasAllPermissions('edit-articles', 'edit-news'));
     }
@@ -349,33 +349,33 @@ class HasPermissionsTest extends TestCase
         $this->testUser->revokePermissionTo('edit-articles');
         $this->assertFalse($this->testUser->hasDirectPermission('edit-articles'));
 
-        $this->testUser->assignRole('testRole');
-        $this->testUserRole->givePermissionTo('edit-articles');
+        $this->testUser->assignGroup('testGroup');
+        $this->testUserGroup->givePermissionTo('edit-articles');
         $this->assertFalse($this->testUser->hasDirectPermission('edit-articles'));
     }
 
     /** @test */
-    public function it_can_list_all_the_permissions_via_roles_of_user()
+    public function it_can_list_all_the_permissions_via_groups_of_user()
     {
-        $roleModel = app(Role::class);
-        $roleModel->findByName('testRole2')->givePermissionTo('edit-news');
+        $groupModel = app(Group::class);
+        $groupModel->findByName('testGroup2')->givePermissionTo('edit-news');
 
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $this->testUser->assignRole('testRole', 'testRole2');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $this->testUser->assignGroup('testGroup', 'testGroup2');
 
         $this->assertEquals(
             collect(['edit-articles', 'edit-news']),
-            $this->testUser->getPermissionsViaRoles()->pluck('name')
+            $this->testUser->getPermissionsViaGroups()->pluck('name')
         );
     }
 
     /** @test */
-    public function it_can_list_all_the_coupled_permissions_both_directly_and_via_roles()
+    public function it_can_list_all_the_coupled_permissions_both_directly_and_via_groups()
     {
         $this->testUser->givePermissionTo('edit-news');
 
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $this->testUser->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $this->testUser->assignGroup('testGroup');
 
         $this->assertEquals(
             collect(['edit-articles', 'edit-news']),

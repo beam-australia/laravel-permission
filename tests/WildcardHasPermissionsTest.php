@@ -30,19 +30,19 @@ class WildcardHasPermissionsTest extends TestCase
     }
 
     /** @test */
-    public function it_can_check_wildcard_permissions_via_roles()
+    public function it_can_check_wildcard_permissions_via_groups()
     {
         app('config')->set('permission.enable_wildcard_permission', true);
 
         $user1 = User::create(['email' => 'user1@test.com']);
 
-        $user1->assignRole('testRole');
+        $user1->assignGroup('testGroup');
 
         $permission1 = Permission::create(['name' => 'articles,projects.edit,view,create']);
         $permission2 = Permission::create(['name' => 'news.*.456']);
         $permission3 = Permission::create(['name' => 'posts']);
 
-        $this->testUserRole->givePermissionTo([$permission1, $permission2, $permission3]);
+        $this->testUserGroup->givePermissionTo([$permission1, $permission2, $permission3]);
 
         $this->assertTrue($user1->hasPermissionTo('posts.create'));
         $this->assertTrue($user1->hasPermissionTo('news.create.456'));

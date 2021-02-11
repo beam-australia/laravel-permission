@@ -63,17 +63,17 @@ trait HasPermissions
     {
         $permissions = $this->convertToPermissionModels($permissions);
 
-        $rolesWithPermissions = array_unique(array_reduce($permissions, function ($result, $permission) {
-            return array_merge($result, $permission->roles->all());
+        $groupsWithPermissions = array_unique(array_reduce($permissions, function ($result, $permission) {
+            return array_merge($result, $permission->groups->all());
         }, []));
 
-        return $query->where(function (Builder $query) use ($permissions, $rolesWithPermissions) {
+        return $query->where(function (Builder $query) use ($permissions, $groupsWithPermissions) {
             $query->whereHas('permissions', function (Builder $subQuery) use ($permissions) {
                 $subQuery->whereIn(config('permission.table_names.permissions').'.id', \array_column($permissions, 'id'));
             });
-            if (count($rolesWithPermissions) > 0) {
-                $query->orWhereHas('roles', function (Builder $subQuery) use ($rolesWithPermissions) {
-                    $subQuery->whereIn(config('permission.table_names.roles').'.id', \array_column($rolesWithPermissions, 'id'));
+            if (count($groupsWithPermissions) > 0) {
+                $query->orWhereHas('groups', function (Builder $subQuery) use ($groupsWithPermissions) {
+                    $subQuery->whereIn(config('permission.table_names.groups').'.id', \array_column($groupsWithPermissions, 'id'));
                 });
             }
         });
@@ -136,7 +136,7 @@ trait HasPermissions
             throw new PermissionDoesNotExist;
         }
 
-        return $this->hasDirectPermission($permission) || $this->hasPermissionViaRole($permission);
+        return $this->hasDirectPermission($permission) || $this->hasPermissionViaGroup($permission);
     }
 
     /**
@@ -247,15 +247,15 @@ trait HasPermissions
     }
 
     /**
-     * Determine if the model has, via roles, the given permission.
+     * Determine if the model has, via groups, the given permission.
      *
      * @param \Spatie\Permission\Contracts\Permission $permission
      *
      * @return bool
      */
-    protected function hasPermissionViaRole(Permission $permission): bool
+    protected function hasPermissionViaGroup(Permission $permission): bool
     {
-        return $this->hasRole($permission->roles);
+        return $this->hasGroup($permission->groups);
     }
 
     /**
@@ -286,33 +286,33 @@ trait HasPermissions
     }
 
     /**
-     * Return all the permissions the model has via roles.
+     * Return all the permissions the model has via groups.
      */
-    public function getPermissionsViaRoles(): Collection
+    public function getPermissionsViaGroups(): Collection
     {
-        return $this->loadMissing('roles', 'roles.permissions')
-            ->roles->flatMap(function ($role) {
-                return $role->permissions;
+        return $this->loadMissing('groups', 'groups.permissions')
+            ->groups->flatMap(function ($group) {
+                return $group->permissions;
             })->sort()->values();
     }
 
     /**
-     * Return all the permissions the model has, both directly and via roles.
+     * Return all the permissions the model has, both directly and via groups.
      */
     public function getAllPermissions(): Collection
     {
         /** @var Collection $permissions */
         $permissions = $this->permissions;
 
-        if ($this->roles) {
-            $permissions = $permissions->merge($this->getPermissionsViaRoles());
+        if ($this->groups) {
+            $permissions = $permissions->merge($this->getPermissionsViaGroups());
         }
 
         return $permissions->sort()->values();
     }
 
     /**
-     * Grant the given permission(s) to a role.
+     * Grant the given permission(s) to a group.
      *
      * @param string|array|\Spatie\Permission\Contracts\Permission|\Illuminate\Support\Collection $permissions
      *
@@ -424,14 +424,14 @@ trait HasPermissions
     }
 
     /**
-     * @param \Spatie\Permission\Contracts\Permission|\Spatie\Permission\Contracts\Role $roleOrPermission
+     * @param \Spatie\Permission\Contracts\Permission|\Spatie\Permission\Contracts\Group $groupOrPermission
      *
      * @throws \Spatie\Permission\Exceptions\GuardDoesNotMatch
      */
-    protected function ensureModelSharesGuard($roleOrPermission)
+    protected function ensureModelSharesGuard($groupOrPermission)
     {
-        if (! $this->getGuardNames()->contains($roleOrPermission->guard_name)) {
-            throw GuardDoesNotMatch::create($roleOrPermission->guard_name, $this->getGuardNames());
+        if (! $this->getGuardNames()->contains($groupOrPermission->guard_name)) {
+            throw GuardDoesNotMatch::create($groupOrPermission->guard_name, $this->getGuardNames());
         }
     }
 

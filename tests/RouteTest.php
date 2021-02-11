@@ -7,15 +7,15 @@ use Illuminate\Http\Response;
 class RouteTest extends TestCase
 {
     /** @test */
-    public function test_role_function()
+    public function test_group_function()
     {
         $router = $this->getRouter();
 
-        $router->get('role-test', $this->getRouteResponse())
-                ->name('role.test')
-                ->role('superadmin');
+        $router->get('group-test', $this->getRouteResponse())
+                ->name('group.test')
+                ->group('superadmin');
 
-        $this->assertEquals(['role:superadmin'], $this->getLastRouteMiddlewareFromRouter($router));
+        $this->assertEquals(['group:superadmin'], $this->getLastRouteMiddlewareFromRouter($router));
     }
 
     /** @test */
@@ -31,18 +31,18 @@ class RouteTest extends TestCase
     }
 
     /** @test */
-    public function test_role_and_permission_function_together()
+    public function test_group_and_permission_function_together()
     {
         $router = $this->getRouter();
 
-        $router->get('role-permission-test', $this->getRouteResponse())
-                ->name('role-permission.test')
-                ->role('superadmin|admin')
+        $router->get('group-permission-test', $this->getRouteResponse())
+                ->name('group-permission.test')
+                ->group('superadmin|admin')
                 ->permission('create user|edit user');
 
         $this->assertEquals(
             [
-                'role:superadmin|admin',
+                'group:superadmin|admin',
                 'permission:create user|edit user',
             ],
             $this->getLastRouteMiddlewareFromRouter($router)

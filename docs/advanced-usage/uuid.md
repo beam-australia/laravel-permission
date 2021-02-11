@@ -13,14 +13,14 @@ Since each UUID implementation approach is different, some of these may or may n
 ### Migrations
 You will probably want to update the `create_permission_tables.php` migration:
 
-If your User models are using `uuid` instead of `unsignedBigInteger` then you'll need to reflect the change in the migration provided by this package. Something like this would be typical, for both `model_has_permissions` and `model_has_roles` tables:
+If your User models are using `uuid` instead of `unsignedBigInteger` then you'll need to reflect the change in the migration provided by this package. Something like this would be typical, for both `model_has_permissions` and `model_has_groups` tables:
 
 ```diff
 -  $table->unsignedBigInteger($columnNames['model_morph_key'])
 +  $table->uuid($columnNames['model_morph_key'])
 ```
 
-OPTIONAL: If you also want the roles and permissions to use a UUID for their `id` value, then you'll need to also change the id fields accordingly, and manually set the primary key. LEAVE THE FIELD NAME AS `id` unless you also change it in dozens of other places.
+OPTIONAL: If you also want the groups and permissions to use a UUID for their `id` value, then you'll need to also change the id fields accordingly, and manually set the primary key. LEAVE THE FIELD NAME AS `id` unless you also change it in dozens of other places.
 
 ```diff
     Schema::create($tableNames['permissions'], function (Blueprint $table) {
@@ -33,7 +33,7 @@ OPTIONAL: If you also want the roles and permissions to use a UUID for their `id
 +        $table->primary('id');
     });
 
-    Schema::create($tableNames['roles'], function (Blueprint $table) {
+    Schema::create($tableNames['groups'], function (Blueprint $table) {
 -        $table->bigIncrements('id');
 +        $table->uuid('id');
         $table->string('name');
@@ -48,16 +48,16 @@ OPTIONAL: If you also want the roles and permissions to use a UUID for their `id
 +        $table->uuid('permission_id');
     ...
 
-    Schema::create($tableNames['model_has_roles'], function (Blueprint $table) use ($tableNames, $columnNames) {
--        $table->bigIncrements('role_id');
-+        $table->uuid('role_id');
+    Schema::create($tableNames['model_has_groups'], function (Blueprint $table) use ($tableNames, $columnNames) {
+-        $table->bigIncrements('group_id');
++        $table->uuid('group_id');
     ...
 
-    Schema::create($tableNames['role_has_permissions'], function (Blueprint $table) use ($tableNames) {
+    Schema::create($tableNames['group_has_permissions'], function (Blueprint $table) use ($tableNames) {
 -        $table->bigIncrements('permission_id');
--        $table->bigIncrements('role_id');
+-        $table->bigIncrements('group_id');
 +        $table->uuid('permission_id');
-+        $table->uuid('role_id');
++        $table->uuid('group_id');
 ```
 
 
@@ -80,13 +80,13 @@ For this, in the configuration file edit `column_names.model_morph_key`:
 - If you extend the models into your app, be sure to list those models in your configuration file. See the Extending section of the documentation and the Models section below.
 
 ### Models
-If you want all the role/permission objects to have a UUID instead of an integer, you will need to Extend the default Role and Permission models into your own namespace in order to set some specific properties. (See the Extending section of the docs, where it explains requirements of Extending, as well as the configuration settings you need to update.)
+If you want all the group/permission objects to have a UUID instead of an integer, you will need to Extend the default Group and Permission models into your own namespace in order to set some specific properties. (See the Extending section of the docs, where it explains requirements of Extending, as well as the configuration settings you need to update.)
 
 - You likely want to set `protected $keyType = 'string';` so Laravel handles joins as strings and doesn't cast to integer.
 - OPTIONAL: If you changed the field name in your migrations, you must set `protected $primaryKey = 'uuid';` to match.
 - Usually for UUID you will also set `public $incrementing = false;`. Remove it if it causes problems for you.
 
-It is common to use a trait to handle the $keyType and $incrementing settings, as well as add a boot event trigger to ensure new records are assigned a uuid. You would `use` this trait in your User and extended Role/Permission models. An example `UuidTrait` is shown here for inspiration. Adjust to suit your needs.
+It is common to use a trait to handle the $keyType and $incrementing settings, as well as add a boot event trigger to ensure new records are assigned a uuid. You would `use` this trait in your User and extended Group/Permission models. An example `UuidTrait` is shown here for inspiration. Adjust to suit your needs.
 
 ```php
     <?php

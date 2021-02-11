@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Contracts\Permission;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Contracts\Group;
 
 class PermissionRegistrar
 {
@@ -21,7 +21,7 @@ class PermissionRegistrar
     protected $permissionClass;
 
     /** @var string */
-    protected $roleClass;
+    protected $groupClass;
 
     /** @var \Illuminate\Database\Eloquent\Collection */
     protected $permissions;
@@ -43,7 +43,7 @@ class PermissionRegistrar
     public function __construct(CacheManager $cacheManager)
     {
         $this->permissionClass = config('permission.models.permission');
-        $this->roleClass = config('permission.models.role');
+        $this->groupClass = config('permission.models.group');
 
         $this->cacheManager = $cacheManager;
         $this->initializeCache();
@@ -126,7 +126,7 @@ class PermissionRegistrar
         if ($this->permissions === null) {
             $this->permissions = $this->cache->remember(self::$cacheKey, self::$cacheExpirationTime, function () {
                 return $this->getPermissionClass()
-                    ->with('roles')
+                    ->with('groups')
                     ->get();
             });
         }
@@ -158,13 +158,13 @@ class PermissionRegistrar
     }
 
     /**
-     * Get an instance of the role class.
+     * Get an instance of the group class.
      *
-     * @return \Spatie\Permission\Contracts\Role
+     * @return \Spatie\Permission\Contracts\Group
      */
-    public function getRoleClass(): Role
+    public function getGroupClass(): Group
     {
-        return app($this->roleClass);
+        return app($this->groupClass);
     }
 
     /**

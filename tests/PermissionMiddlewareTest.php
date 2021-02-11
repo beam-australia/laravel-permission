@@ -124,7 +124,7 @@ class PermissionMiddlewareTest extends TestCase
     }
 
     /** @test */
-    public function a_user_can_access_a_route_protected_by_permission_middleware_if_has_permission_via_role()
+    public function a_user_can_access_a_route_protected_by_permission_middleware_if_has_permission_via_group()
     {
         Auth::login($this->testUser);
 
@@ -133,8 +133,8 @@ class PermissionMiddlewareTest extends TestCase
             $this->runMiddleware($this->permissionMiddleware, 'edit-articles')
         );
 
-        $this->testUserRole->givePermissionTo('edit-articles');
-        $this->testUser->assignRole('testRole');
+        $this->testUserGroup->givePermissionTo('edit-articles');
+        $this->testUser->assignGroup('testGroup');
 
         $this->assertEquals(
             200,

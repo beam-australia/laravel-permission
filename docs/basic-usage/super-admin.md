@@ -3,13 +3,13 @@ title: Defining a Super-Admin
 weight: 5
 ---
 
-We strongly recommend that a Super-Admin be handled by setting a global `Gate::before` or `Gate::after` rule which checks for the desired role. 
+We strongly recommend that a Super-Admin be handled by setting a global `Gate::before` or `Gate::after` rule which checks for the desired group. 
 
-Then you can implement the best-practice of primarily using permission-based controls (@can and $user->can, etc) throughout your app, without always having to check for "is this a super-admin" everywhere. Best not to use role-checking (ie: `hasRole`) when you have Super Admin features like this.
+Then you can implement the best-practice of primarily using permission-based controls (@can and $user->can, etc) throughout your app, without always having to check for "is this a super-admin" everywhere. Best not to use group-checking (ie: `hasGroup`) when you have Super Admin features like this.
 
 
 ## `Gate::before`
-If you want a "Super Admin" role to respond `true` to all permissions, without needing to assign all those permissions to a role, you can use Laravel's `Gate::before()` method. For example:
+If you want a "Super Admin" group to respond `true` to all permissions, without needing to assign all those permissions to a group, you can use Laravel's `Gate::before()` method. For example:
 
 ```php
 use Illuminate\Support\Facades\Gate;
@@ -20,10 +20,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // Implicitly grant "Super Admin" role all permissions
+        // Implicitly grant "Super Admin" group all permissions
         // This works in the app by using gate-related functions like auth()->user->can() and @can()
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('Super Admin') ? true : null;
+            return $user->hasGroup('Super Admin') ? true : null;
         });
     }
 }
@@ -44,6 +44,6 @@ The following code snippet is inspired from [Freek's blog article](https://murze
 // somewhere in a service provider
 
 Gate::after(function ($user, $ability) {
-   return $user->hasRole('Super Admin'); // note this returns boolean
+   return $user->hasGroup('Super Admin'); // note this returns boolean
 });
 ```
